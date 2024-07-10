@@ -17,23 +17,21 @@ function injectScript() {
 
   appendScript();
 
-  // Create the custom element after the script is loaded
-  script.onload = () => {
-    const comentarioElement = document.createElement("comentario-comments");
+  const comentarioElement = document.createElement("comentario-comments");
 
-    const checkAndInject = () => {
-      const targetElement = document.querySelector(
-        "#content > div > div > div.app-body-wrapper > div > div > div.content-wrapper--MF5LS > div",
-      ); // Adjust the selector as needed
-      if (targetElement) {
-        targetElement.appendChild(comentarioElement);
-      } else {
-        requestAnimationFrame(checkAndInject);
-      }
-    };
-
-    checkAndInject();
+  const checkAndInject = () => {
+    const targetElement = document.querySelector(
+      "#content > div > div > div.app-body-wrapper > div > div > div.content-wrapper--MF5LS > div",
+    ); // Adjust the selector as needed
+    if (targetElement) {
+      targetElement.appendChild(comentarioElement);
+    } else {
+      requestAnimationFrame(checkAndInject);
+    }
   };
+
+  // checkAndInject();
+  document.documentElement.appendChild(comentarioElement);
 }
 // Inject the script
 injectScript();

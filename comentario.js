@@ -3439,7 +3439,7 @@
       super(...arguments),
         (this.origin = "https://comentario.rmrf.online"),
         (this.cdn = "https://comentario.rmrf.online"),
-        (this.apiService = new h(e.joinUrl(this.origin, "api"))),
+        (this.apiService = new h(this.origin + "/api")),
         (this.i18n = new Dt(this.apiService)),
         (this.location = parent.Cypress ? window.location : parent.location),
         (this.localConfig = new Bt()),
