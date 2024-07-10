@@ -8,16 +8,7 @@
     {
       "matches": ["https://www.ipusenpai.in/*"],
       "js": ["content-script.js"],
-      "run_at": "document_end"
+      "run_at": "document_start"
     }
-  ],
-  "background": {
-    "service_worker": "service-worker.js"
-  }
-  // "web_accessible_resources": [
-  //   {
-  //     "resources": ["comentario.js"],
-  //     "matches": ["https://crunchyroll.com/"]
-  //   }
-  // ]
+  ]
 }
