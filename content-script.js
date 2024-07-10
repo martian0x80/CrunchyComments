@@ -5,32 +5,37 @@ function injectScript() {
   const script = document.createElement("script");
   script.src = chrome.runtime.getURL("comentario.js");
   script.defer = true;
-  document.head.appendChild(script);
+  document.documentElement.appendChild(script); // <--- no err now
+  // chrome.scripting
+  //   .executeScript({
+  //     target: { tabId: getTabId(), allFrames: true },
+  //     files: ["comentario.js"],
+  //   })
+  //   .then(() => console.log("script injected in all frames"));
 
-  // Create the custom element after the script is loaded
+  // (async () => {
+  //   // see the note below on how to choose currentWindow or lastFocusedWindow
+  //   const [tab] = await chrome.tabs.query({
+  //     active: true,
+  //     lastFocusedWindow: true,
+  //   });
+  //   console.log(tab.url);
+  //   // ..........
+  // })();
   //
-  // Check the chrome extension reference api
-  script.onload = () => {
-    const comentarioElement = document.createElement("comentario-comments");
+  // <script defer src="http://13.201.77.10:8080/comentario.js"></script> thanks
+  // <comentario-comments></comentario-comments>
+  //target element not found a rha
 
-    // Find the specific place in the HTML to insert the comment section
-    const targetElement = document.querySelector(
-      "#content > div > div > div.app-body-wrapper > div > div",
-    );
-
-    if (targetElement) {
-      targetElement.appendChild(comentarioElement);
-    } else {
-      console.warn("Target element not found");
-    }
-  };
+  console.log(window.location.href);
+  const comentarioElement = document.createElement("comentario-comments");
+  const targetElement = document.querySelector(".overflow-x-clip");
+  if (targetElement) {
+    targetElement.appendChild(comentarioElement);
+  } else {
+    console.warn("Target element not found");
+  }
 }
 
 // Inject the script
-// injectScript();
-// see discord
-var h1 = document.createElement("h1");
-h1.innerText = "Hello, this is a new H1 tag!";
-
-// Append the h1 element to the body
-document.body.appendChild(h1);
+injectScript();
