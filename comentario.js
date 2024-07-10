@@ -3437,8 +3437,10 @@
   class Rt extends HTMLElement {
     constructor() {
       super(...arguments),
-        (this.origin = "http://13.201.77.10:8080"),
-        (this.cdn = "http://13.201.77.10:8080"),
+        (this.origin =
+          "http://ec2-13-201-77-10.ap-south-1.compute.amazonaws.com:8080"),
+        (this.cdn =
+          "http://ec2-13-201-77-10.ap-south-1.compute.amazonaws.com:8080"),
         (this.apiService = new h(e.joinUrl(this.origin, "api"))),
         (this.i18n = new Dt(this.apiService)),
         (this.location = parent.Cypress ? window.location : parent.location),

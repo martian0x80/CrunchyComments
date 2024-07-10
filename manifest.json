@@ -8,7 +8,13 @@
     {
       "matches": ["https://www.ipusenpai.in/*"],
       "js": ["content-script.js"],
-      "run_at": "document_start"
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["comentario.js"],
+      "matches": ["<all_urls>"]
     }
   ]
 }
