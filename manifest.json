@@ -1,7 +1,7 @@
 {
   "name": "HimeComments",
   "description": "HimeComments is a simple extension that brings back the comments section on Crunchyroll.",
-  "version": "1.0",
+  "version": "1.0.0",
   "manifest_version": 3,
   "permissions": ["activeTab", "scripting"],
   "content_scripts": [
