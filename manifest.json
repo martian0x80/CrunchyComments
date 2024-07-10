@@ -1,0 +1,23 @@
+{
+  "name": "HimeComments",
+  "description": "HimeComments is a simple extension that brings back the comments section on Crunchyroll.",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": ["activeTab", "scripting"],
+  "content_scripts": [
+    {
+      "matches": ["https://www.ipusenpai.in/*"],
+      "js": ["content-script.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": {
+    "service_worker": "service-worker.js"
+  }
+  // "web_accessible_resources": [
+  //   {
+  //     "resources": ["comentario.js"],
+  //     "matches": ["https://crunchyroll.com/"]
+  //   }
+  // ]
+}
