@@ -17,28 +17,36 @@ function injectScript() {
 
   appendScript();
 
+  const pathname = window.location.href;
+  const pathSegments = pathname.split("/").filter((segment) => segment !== "");
+
+  const segment = `/${pathSegments[3]}/${pathSegments[4]}`;
+
   const comentarioElement = document.createElement("comentario-comments");
+  comentarioElement.setAttribute("page-id", segment);
+  comentarioElement.setAttribute("max-level", 5);
+
+  document.addEventListener("readystatechange", (event) => {
+    if (document.readyState === "complete") {
+      checkAndInject();
+    }
+  });
 
   const checkAndInject = () => {
-    // const targetElement = document.querySelector(
-    //   "#content > div > div > div.app-body-wrapper > div > div",
-    // ); // Adjust the selector as needed
-    const targetElement = document
-      .querySelector(".expandable-section--is-expanded--8vmUz")
-      .insertAdjacentHTML(
-        "afterend",
-        '<div id="comment-system-container"></div>',
-      );
+    const targetElement = document.querySelector(".app-body-wrapper");
+    console.log("fgagagagga");
 
     if (targetElement) {
-      targetElement.appendChild(comentarioElement);
+      console.log("hmmmm gottt");
+      targetElement.insertAdjacentElement("afterend", comentarioElement);
     } else {
+      console.warn("hmmm");
       requestAnimationFrame(checkAndInject);
     }
   };
 
   // checkAndInject();
-  document.documentElement.appendChild(comentarioElement);
+  // document.documentElement.appendChild(comentarioElement);
 }
 // Inject the script
 injectScript();
