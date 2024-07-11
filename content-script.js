@@ -20,9 +20,16 @@ function injectScript() {
   const comentarioElement = document.createElement("comentario-comments");
 
   const checkAndInject = () => {
-    const targetElement = document.querySelector(
-      "#content > div > div > div.app-body-wrapper > div > div > div.content-wrapper--MF5LS > div",
-    ); // Adjust the selector as needed
+    // const targetElement = document.querySelector(
+    //   "#content > div > div > div.app-body-wrapper > div > div",
+    // ); // Adjust the selector as needed
+    const targetElement = document
+      .querySelector(".expandable-section--is-expanded--8vmUz")
+      .insertAdjacentHTML(
+        "afterend",
+        '<div id="comment-system-container"></div>',
+      );
+
     if (targetElement) {
       targetElement.appendChild(comentarioElement);
     } else {
