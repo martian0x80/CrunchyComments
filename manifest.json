@@ -8,7 +8,7 @@
     {
       "matches": ["https://www.crunchyroll.com/*"],
       "js": ["content-script.js"],
-      "run_at": "document_idle"
+      "run_at": "document_end"
     }
   ],
   "web_accessible_resources": [
