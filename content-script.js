@@ -17,12 +17,6 @@ function injectScript() {
 
   appendScript();
 
-  const pathname = window.location.pathname;
-
-  const comentarioElement = document.createElement("comentario-comments");
-  comentarioElement.setAttribute("page-id", pathname);
-  comentarioElement.setAttribute("max-level", 5);
-
   document.addEventListener("readystatechange", (event) => {
     if (document.readyState === "complete") {
       checkAndInject();
@@ -34,8 +28,11 @@ function injectScript() {
     const targetElement = document.querySelector(".app-body-wrapper");
 
     if (targetElement) {
+      targetElement.insertAdjacentElement(
+        "afterend",
+        document.createElement("comentario-comments"),
+      );
       console.log("injected comments");
-      targetElement.insertAdjacentElement("afterend", comentarioElement);
     } else {
       requestAnimationFrame(checkAndInject);
     }
@@ -43,8 +40,10 @@ function injectScript() {
 
   const checkAndUpdate = () => {
     window.navigation.addEventListener("navigate", (event) => {
-      const pathname = new URL(event.destination.url).pathname;
-      comentarioElement.setAttribute("page-id", pathname);
+      document.getElementsByTagName("comentario-comments")[0].remove();
+      setTimeout(() => {
+        checkAndInject();
+      }, 500);
     });
     console.log("injected event listener");
   };

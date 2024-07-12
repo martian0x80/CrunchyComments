@@ -3454,7 +3454,7 @@
         (this.autoInit = "false" !== this.getAttribute("auto-init")),
         (this.autoNonIntSso =
           "true" === this.getAttribute("auto-non-interactive-sso")),
-        (this.maxLevel = Number(this.getAttribute("max-level")) || 10),
+        (this.maxLevel = Number(this.getAttribute("max-level")) || 5),
         (this.liveUpdate = "false" !== this.getAttribute("live-update"));
     }
     connectedCallback() {
