@@ -30,7 +30,7 @@
 <br/>
 
 <div align="center">
-    <a href="https://discord.gg/SK2U9JgF">Discord</a> |
+    <a href="https://discord.gg/DqXgPrVs">Discord</a> |
     <a href="mailto:nevergonnaletyoudown@proxiedmail.com">Mail</a>
 </div>
 <br/>
@@ -65,3 +65,6 @@
 ## Getting Started
 
  WIP.
+
+## Credits
+- [LakshayGMZ](https://github.com/lakshayGMZ/) - Helped fix issues, and almost all of the work to make it functional as an extension.
