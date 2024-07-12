@@ -17,36 +17,37 @@ function injectScript() {
 
   appendScript();
 
-  const pathname = window.location.href;
-  const pathSegments = pathname.split("/").filter((segment) => segment !== "");
-
-  const segment = `/${pathSegments[3]}/${pathSegments[4]}`;
+  const pathname = window.location.pathname;
 
   const comentarioElement = document.createElement("comentario-comments");
-  comentarioElement.setAttribute("page-id", segment);
+  comentarioElement.setAttribute("page-id", pathname);
   comentarioElement.setAttribute("max-level", 5);
 
   document.addEventListener("readystatechange", (event) => {
     if (document.readyState === "complete") {
       checkAndInject();
+      checkAndUpdate();
     }
   });
 
   const checkAndInject = () => {
     const targetElement = document.querySelector(".app-body-wrapper");
-    console.log("fgagagagga");
 
     if (targetElement) {
-      console.log("hmmmm gottt");
+      console.log("injected comments");
       targetElement.insertAdjacentElement("afterend", comentarioElement);
     } else {
-      console.warn("hmmm");
       requestAnimationFrame(checkAndInject);
     }
   };
 
-  // checkAndInject();
-  // document.documentElement.appendChild(comentarioElement);
+  const checkAndUpdate = () => {
+    window.navigation.addEventListener("navigate", (event) => {
+      const pathname = new URL(event.destination.url).pathname;
+      comentarioElement.setAttribute("page-id", pathname);
+    });
+    console.log("injected event listener");
+  };
 }
 // Inject the script
 injectScript();
