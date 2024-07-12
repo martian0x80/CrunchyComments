@@ -1047,7 +1047,7 @@
   .comentario-comment-editor-preview
   pre {
   padding: 6px;
-  background-color: #f1f3f5;
+  background-color: transparent;
 }
 .comentario-root .comentario-card {
   display: flex;
@@ -1172,7 +1172,7 @@
 }
 .comentario-root .comentario-card .comentario-card-body pre {
   padding: 6px;
-  background-color: #f1f3f5;
+  background-color: transparent;
 }
 .comentario-root .comentario-card .comentario-moderation-notice {
   width: 100%;
