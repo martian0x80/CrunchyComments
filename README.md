@@ -10,11 +10,11 @@
 <br/>
 <br/>
 
-[![GitHub last commit](https://img.shields.io/github/last-commit/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/commits/main)
+[![GitHub last commit](https://img.shields.io/github/last-commit/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/commits/master)
 [![GitHub issues](https://img.shields.io/github/issues/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/pulls)
 [![GitHub contributors](https://img.shields.io/github/contributors/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/graphs/contributors)
-[![GitHub license](https://img.shields.io/github/license/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/blob/main/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/network)
 [![GitHub watchers](https://img.shields.io/github/watchers/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/watchers)
