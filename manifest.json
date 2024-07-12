@@ -1,6 +1,6 @@
 {
-  "name": "HimeComments",
-  "description": "HimeComments is a simple extension that brings back the comments section on Crunchyroll.",
+  "name": "Crunchy Comments",
+  "description": "Crunchy Comments is a browser extension that brings back the Crunchyroll comments section. Although, it is not the original comments section, it is a new one that is being developed by the community.",
   "version": "1.0.0",
   "manifest_version": 3,
   "permissions": ["activeTab", "scripting"],
@@ -16,5 +16,16 @@
       "resources": ["comentario.js"],
       "matches": ["<all_urls>"]
     }
-  ]
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "uwuwuwuwuwuwuwuwuw@uwuwuwuwuwuwuwu"
+    }
+  }
 }

@@ -1,7 +1,6 @@
 //
 // https://developer.chrome.com/docs/extensions/develop/concepts/content-scripts
 //
-// Function to inject the script
 function injectScript() {
   const script = document.createElement("script");
   script.src = chrome.runtime.getURL("comentario.js");
@@ -30,7 +29,6 @@ function injectScript() {
       comentarioElement = document.createElement("comentario-comments");
       comentarioElement.setAttribute("max-level", "3");
       targetElement.insertAdjacentElement("afterend", comentarioElement);
-      console.log("injected comments");
     } else {
       requestAnimationFrame(checkAndInject);
     }
@@ -43,7 +41,6 @@ function injectScript() {
         checkAndInject();
       }, 500);
     });
-    console.log("injected event listener");
   };
 }
 // Inject the script
