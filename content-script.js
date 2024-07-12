@@ -26,12 +26,10 @@ function injectScript() {
 
   const checkAndInject = () => {
     const targetElement = document.querySelector(".app-body-wrapper");
-
     if (targetElement) {
-      targetElement.insertAdjacentElement(
-        "afterend",
-        document.createElement("comentario-comments"),
-      );
+      comentarioElement = document.createElement("comentario-comments");
+      comentarioElement.setAttribute("max-level", "3");
+      targetElement.insertAdjacentElement("afterend", comentarioElement);
       console.log("injected comments");
     } else {
       requestAnimationFrame(checkAndInject);
