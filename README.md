@@ -10,6 +10,9 @@
 <br/>
 <br/>
 
+[![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
+
+
 [![GitHub last commit](https://img.shields.io/github/last-commit/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/commits/master)
 [![GitHub issues](https://img.shields.io/github/issues/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/pulls)
@@ -64,7 +67,9 @@
 
 ## Getting Started
 
- WIP.
+ [![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
+
+- Chrome? Coming Soon.
 
 ## Credits
 - [LakshayGMZ](https://github.com/lakshayGMZ/) - Helped fix issues, and almost all of the work to make it functional as an extension.
