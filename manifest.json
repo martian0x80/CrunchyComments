@@ -1,9 +1,8 @@
 {
   "name": "Crunchy Comments",
-  "description": "Crunchy Comments is a browser extension that brings back the Crunchyroll comments section. Although, it is not the original comments section, it is a new one that is being developed by the community.",
+  "description": "Crunchy Comments is a browser extension that brings back the Crunchyroll comments section.",
   "version": "1.0.0",
   "manifest_version": 3,
-  "permissions": ["activeTab", "scripting"],
   "content_scripts": [
     {
       "matches": ["https://www.crunchyroll.com/*"],
@@ -22,10 +21,5 @@
     "32": "icons/icon32.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "uwuwuwuwuwuwuwuwuw@uwuwuwuwuwuwuwu"
-    }
   }
 }
