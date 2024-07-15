@@ -1,17 +1,16 @@
 <div align="center">
 
 <h1 style="border-bottom: none">
-    <b>Crunchy Comments</b>
+    <b>Crunchyroll Comments</b>
     <br>
 </h1>
-<a href="HimeComments.png">
-    <img alt="Crunchy Comments logo" src="HimeComments.png" style="width: 25%; height: auto; max-width: 300px; max-height: 300px">
+<a href="images/HimeComments.jpeg">
+    <img alt="Crunchyroll Comments logo" src="HimeComments.jpeg" style="width: 25%; height: auto; max-width: 300px; max-height: 300px">
 </a>
 <br/>
 <br/>
 
 [![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
-
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/commits/master)
 [![GitHub issues](https://img.shields.io/github/issues/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/issues)
@@ -23,10 +22,10 @@
 [![GitHub watchers](https://img.shields.io/github/watchers/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/watchers)
 
 <p align="center">
-  Bring back the comment section to Crunchyroll with Crunchy Comments, an open-source, and privacy-focused browser extension for Chrome, Firefox, and Edge.
+  Bring back the comment section to Crunchyroll with Crunchyroll Comments, an open-source, and privacy-focused browser extension for Chrome, Firefox, and Edge.
 </p>
 <a href="ss.png">
-    <img alt="Crunchy Comments screenshot" src="ss.png" style="width: 100%; height: auto; max-width: 1000px; max-height: 1000px">
+    <img alt="Crunchyroll Comments screenshot" src="ss.png" style="width: 100%; height: auto; max-width: 1000px; max-height: 1000px">
 </a>
 </div>
 
@@ -51,7 +50,7 @@
 > These are copied from [Comentario](https://gitlab.com/comentario/comentario)'s README.md, and will be updated to reflect Crunchy Comments' features.
 
 - **Privacy by Design**: No tracking scripts or ads. Collects only high-level statistics like visitor's country, browser, and language.
-- **Flexible Login Options**: 
+- **Flexible Login Options**:
   - Optional anonymous comments
   - Local authentication with email and password
   - Social logins via Google, Twitter/X, Facebook, GitHub, GitLab
@@ -68,8 +67,6 @@
 ## Getting Started
 
  [![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
-
-- Chrome? Coming Soon.
 
 ## Credits
 - [LakshayGMZ](https://github.com/lakshayGMZ/) - Helped fix issues, and almost all of the work to make it functional as an extension.
