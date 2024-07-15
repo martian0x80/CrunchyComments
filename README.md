@@ -5,17 +5,20 @@
     <br>
 </h1>
 <a href="images/HimeComments.jpeg">
-    <img alt="Crunchyroll Comments logo" src="HimeComments.jpeg" style="width: 25%; height: auto; max-width: 300px; max-height: 300px">
+    <img alt="Crunchyroll Comments logo" src="images/HimeComments.jpeg" style="width: 25%; height: auto; max-width: 300px; max-height: 300px">
 </a>
 <br/>
 <br/>
 
+[![UV4C4ybeBTsZt43U4xis](https://github.com/user-attachments/assets/6a6c5caa-f384-4201-bc2e-023bfd7687c4)](https://chromewebstore.google.com/detail/crunchy-comments/feapmagcaclnifojeninfmpdedbiafdd?authuser=0&hl=en)
 [![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
+
+
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/commits/master)
 [![GitHub issues](https://img.shields.io/github/issues/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/pulls)
-[![GitHub contributors](https://img.shields.io/github/contributors/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/graphs/contributors)
+[![GitHub contributors](https://img.shields.io/github/contributors/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/graphs/contributors)<br/>
 [![GitHub license](https://img.shields.io/github/license/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/blob/master/LICENSE)
 [![GitHub stars](https://img.shields.io/github/stars/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/network)
@@ -24,8 +27,8 @@
 <p align="center">
   Bring back the comment section to Crunchyroll with Crunchyroll Comments, an open-source, and privacy-focused browser extension for Chrome, Firefox, and Edge.
 </p>
-<a href="ss.png">
-    <img alt="Crunchyroll Comments screenshot" src="ss.png" style="width: 100%; height: auto; max-width: 1000px; max-height: 1000px">
+<a href="images/ss.png">
+    <img alt="Crunchyroll Comments screenshot" src="images/ss.png" style="width: 100%; height: auto; max-width: 1000px; max-height: 1000px">
 </a>
 </div>
 
@@ -37,13 +40,13 @@
 </div>
 <br/>
 
+
 <div align="center">
-    <p style="font-size: 2em; font-weight: bold">
+    <h2 style="font-weight: bold">
         Features
-    </p>
+    </h2>
 </div>
 
-## Features
 
 ### Powered by [Comentario](https://gitlab.com/comentario/comentario)
 
@@ -66,7 +69,8 @@
 
 ## Getting Started
 
- [![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
+[![UV4C4ybeBTsZt43U4xis](https://github.com/user-attachments/assets/6a6c5caa-f384-4201-bc2e-023bfd7687c4)](https://chromewebstore.google.com/detail/crunchy-comments/feapmagcaclnifojeninfmpdedbiafdd?authuser=0&hl=en)
+[![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
 
 ## Credits
 - [LakshayGMZ](https://github.com/lakshayGMZ/) - Helped fix issues, and almost all of the work to make it functional as an extension.
