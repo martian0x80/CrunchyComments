@@ -30,9 +30,6 @@ const checkAndUpdate = () => {
       if (oldHref != document.location.href) {
         oldHref = document.location.href;
         checkAndInject();
-        console.log(
-          "Content script detected URL change to: " + document.location.href,
-        );
       }
     });
   });
