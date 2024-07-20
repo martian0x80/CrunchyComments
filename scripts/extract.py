@@ -4,10 +4,13 @@ from typing import Dict, List, Union
 import re
 import time
 import json
+import dbm
 
 base_url = 'https://web.archive.org/web'
-timestamp = '20240613225900'
-webarc_url = f'{base_url}/{timestamp}'
+# timestamp = '20240613225900'
+# alt_timestamp = '20240403050912'
+# webarc_url = f'{base_url}/{timestamp}'
+webarc_url = f'{base_url}'
 
 crunchyroll_url = 'https://www.crunchyroll.com'
 
@@ -30,7 +33,29 @@ def get_webarchive_url(url: str) -> str:
     Args:
         url (str): The URL of the crunchyroll page
     """
-    return f'{webarc_url}/{url}'
+    limit = 10
+
+    cdx_url = f'https://web.archive.org/cdx/search/cdx?url={url}&limit=-{limit}&showResumeKey=true&output=json&fl=timestamp&filter=statuscode:200&collapse=timestamp:6'
+
+    try:
+        response = requests.get(cdx_url)
+        response.raise_for_status()
+        data = response.json()
+    except requests.exceptions.RequestException as e:
+        raise Exception('Failed to connect to web.archive.org') from e
+    
+    if len(data) == 0:
+        raise ValueError('No archived pages found')
+    
+    for i in data[::-1]:
+        try:
+            timestamp = i[0]
+            if len(timestamp) != 14:
+                continue
+        except IndexError:
+            continue
+        
+        yield f'{base_url}/{timestamp}/{url}'
 
 class Extractor:
     '''
@@ -48,19 +73,37 @@ class Extractor:
         #     if 'watch' not in url:
         #         raise ValueError('Invalid episode URL')
 
-        if 'crunchyroll.com' not in url:
-            raise ValueError('Invalid URL')
-
-        if 'web.archive.org' not in url:
-            self.path = url.split('crunchyroll.com')[1]
-            url = get_webarchive_url(url)
-
         self.url = url
+
+        print(f'\nUrl: {url}\n')
+
+        self.path = url.split('crunchyroll.com')[1]
+
+        # if 'crunchyroll.com' not in url:
+        #     raise ValueError('Invalid URL')
+
+        # if 'web.archive.org' not in url:
+        #     self.path = url.split('crunchyroll.com')[1]
+        #     url = get_webarchive_url(url)
+
+        # self.url = url
+        # try:
+        #     redirect_url = requests.get(url).url
+        #     self.page = requests.get(redirect_url)
+        # except requests.exceptions.RequestException as e:
+        #     raise Exception('Failed to connect to web.archive.org') from e
+        # self.soup = BeautifulSoup(self.page.content, 'html.parser')
+
+    def isValidPage(self, url) -> bool:
         try:
-            self.page = requests.get(url)
-        except requests.exceptions.RequestException as e:
-            raise Exception('Failed to connect to web.archive.org') from e
-        self.soup = BeautifulSoup(self.page.content, 'html.parser')
+            response = requests.get(url)
+            soup = BeautifulSoup(response.content, 'html.parser')
+            if soup.find('div', class_='comment--p2rGy') is None and soup.find('div', class_='review__content--A24Z4') is None:
+                return False
+            self.soup = soup
+            return True
+        except requests.exceptions.RequestException:
+            return False
 
     def NoneCheck(self, tag: Tag | NavigableString | None) -> str:
         if tag is not None:
@@ -77,7 +120,7 @@ class Extractor:
             return None
         # rating = int(re.findall(r'\d+\.?\d?K?', self.NoneCheck(review.find_all('span', 'text--gq6o- text--is-m--pqiL-')[1]))[-1])
 
-        text = f'#### {title}\n{text}'
+        text = f'### {title}\n{text}'
 
         return {
             # 'rating': rating,
@@ -126,33 +169,67 @@ class Extractor:
         return comments
 
     def extract(self) -> List[Dict]:
-        if 'series' in self.url:
-            return self.extract_reviews()
-        elif 'watch' in self.url:
-            return self.extract_comments()
-        else:
-            raise ValueError('Invalid URL')
+
+        for url in get_webarchive_url(self.url):
+            print(f'Checking {url}\n')
+            if self.isValidPage(url):
+                print(' > Valid page, extracting comments/reviews\n')
+                break
+            else:
+                print(' > Invalid page\n')
+                continue
+        
+        try:
+            if 'series' in self.url:
+                return self.extract_reviews()
+            elif 'watch' in self.url:
+                return self.extract_comments()
+            else:
+                raise ValueError('Invalid URL')
+
+        except AttributeError:
+            return []
+
+def isRestored(url: str) -> bool:
+    '''Checks if the comments have been restored
+    '''
+    with dbm.open('restored', 'c') as db:
+        if url in db:
+            return True
+    return False
 
 def restore_url(url: str) -> Dict[str, str]:
     '''Restores the comments from the archived page to the Crunchyroll page
     '''
+    if isRestored(url):
+        return {'status': 'Already restored', 'url': url}
+
     data = Extractor(url).extract()
     headers = {'Content-Type': 'application/json'}
+    if len(data) == 0:
+        return {'status': 'No comments found', 'url': url}
+    else:
+        with dbm.open('restored', 'c') as db:
+            db[f'count'] = str(int(db.get(f'count', b'0')) + 1)
+    print(f'Comments found: {len(data)}')
     for i in data:
+        print(f'Restoring comment: {i}')
         response = requests.put('https://comentario.rmrf.online/api/embed/comments', data=json.dumps(i), headers=headers)
         if response.status_code not in [200, 201]:
             # raise Exception('Failed to restore comment')
             return {'status': 'Failed', 'url': url}
+    with dbm.open('restored', 'c') as db:
+        db[url] = 'yes'
     return {'status': 'Success', 'url': url}
 
 if __name__ == '__main__':
 
+    # from api import logger
+
     old_time = time.perf_counter()
 
-    temp_show_url = get_webarchive_url(get_show_url('GY5P48XEY', 'demon-slayer-kimetsu-no-yaiba'))
-    temp_episode_url = get_webarchive_url(get_episode_url('GRG5JD92R', 'cruelty'))
-    extractor = Extractor(temp_show_url)
-    print(extractor.extract())
+    temp_episode_url = 'https://www.crunchyroll.com/watch/GR9V1EV46/the-end-of-the-beginning-and-the-beginning-of-the-end'
+
     extractor = Extractor(temp_episode_url)
     print(extractor.extract())
 
