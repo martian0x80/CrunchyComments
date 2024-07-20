@@ -275,7 +275,7 @@
     line-height: 1.5;
     color: #e1e1e1;
     min-height: 55px;
-    min-width: fit-content;
+    min-width: auto;
     height: min-content;
     width: 69%; /* Nice */
     margin-top: -45px;

@@ -34,7 +34,7 @@
 <br/>
 
 <div align="center">
-    <a href="https://discord.gg/DqXgPrVs">Discord</a> |
+    <a href="https://discord.gg/a3bCfxxt">Discord</a> |
     <a href="mailto:nevergonnaletyoudown@proxiedmail.com">Mail</a>
 </div>
 <br/>
