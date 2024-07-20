@@ -20,6 +20,7 @@ appendScript();
 
 const checkAndUpdate = () => {
   window.addEventListener("popstate", function (event) {
+    restoreComments();
     checkAndInject();
   });
 
@@ -55,9 +56,17 @@ const checkAndInject = () => {
   }
 };
 
+const restoreComments = () => {
+  const currentUrl = document.location.href;
+
+  if (currentUrl.includes("watch") || currentUrl.includes("series"))
+    fetch("http://localhost:8000/restore?url=" + currentUrl);
+};
+
 // EntryPoint
 document.addEventListener("readystatechange", (event) => {
   if (document.readyState === "complete") {
+    restoreComments();
     checkAndInject();
     checkAndUpdate();
   }
