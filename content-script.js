@@ -50,7 +50,7 @@ const checkAndInject = () => {
       oldElement.remove();
     }
     comentarioElement = document.createElement("comentario-comments");
-    comentarioElement.setAttribute("max-level", "3");
+    comentarioElement.setAttribute("max-level", "5");
     targetElement.insertAdjacentElement("afterend", comentarioElement);
   } else {
     requestAnimationFrame(checkAndInject);
@@ -61,7 +61,7 @@ const restoreComments = () => {
   const currentUrl = document.location.href;
 
   if (currentUrl.includes("watch") || currentUrl.includes("series"))
-    fetch("http://localhost:8000/restore?url=" + currentUrl);
+    fetch("https://crunchy.404420.xyz/restore?url=" + currentUrl);
 };
 
 // EntryPoint
