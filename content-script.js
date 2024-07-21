@@ -30,6 +30,7 @@ const checkAndUpdate = () => {
     mutations.forEach(function (mutation) {
       if (oldHref != document.location.href) {
         oldHref = document.location.href;
+        restoreComments();
         checkAndInject();
       }
     });
