@@ -46,12 +46,21 @@ const checkAndInject = () => {
   const targetElement = document.querySelector(".app-body-wrapper");
   if (targetElement) {
     let oldElement = document.querySelector("comentario-comments");
+    let oldscrapeStatusElement = document.querySelector("scrape-status");
     if (oldElement) {
       oldElement.remove();
+      oldscrapeStatusElement.remove();
     }
-    comentarioElement = document.createElement("comentario-comments");
+    let scrapeStatusElement = document.createElement("p");
+    scrapeStatusElement.id = "scrape-status";
+    scrapeStatusElement.className =
+      "text--gq6o- text--is-l--iccTo expandable-section__text---00oG";
+    scrapeStatusElement.innerText = "Restoring old comments...";
+    scrapeStatusElement.style = "display: flex; justify-content: center;";
+    let comentarioElement = document.createElement("comentario-comments");
     comentarioElement.setAttribute("max-level", "5");
     targetElement.insertAdjacentElement("afterend", comentarioElement);
+    targetElement.insertAdjacentElement("afterend", scrapeStatusElement);
   } else {
     requestAnimationFrame(checkAndInject);
   }
@@ -61,7 +70,18 @@ const restoreComments = () => {
   const currentUrl = document.location.href;
 
   if (currentUrl.includes("watch") || currentUrl.includes("series"))
-    fetch("https://crunchy.404420.xyz/restore?url=" + currentUrl);
+    fetch("https://crunchy.404420.xyz/restore?url=" + currentUrl).then(
+      (response) => {
+        response.json().then((data) => {
+          scrapeStatusElement = document.getElementById("scrape-status");
+          try {
+            scrapeStatusElement.innerText = data.message;
+          } catch (error) {
+            scrapeStatusElement.innerText = "Error restoring comments";
+          }
+        });
+      },
+    );
 };
 
 // EntryPoint
