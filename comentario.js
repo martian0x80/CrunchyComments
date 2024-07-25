@@ -49,26 +49,28 @@
       return o > 1
         ? `${o} ${t("timeYearsAgo")}`
         : 1 === o
-        ? t("timeYearAgo")
-        : ((o = Math.floor(n / 2592e3)),
-          o > 1
-            ? `${o} ${t("timeMonthsAgo")}`
-            : 1 === o
-            ? t("timeMonthAgo")
-            : ((o = Math.floor(n / 86400)),
-              o > 1
-                ? `${o} ${t("timeDaysAgo")}`
-                : 1 === o
-                ? t("timeYesterday")
-                : ((o = Math.floor(n / 3600)),
+          ? t("timeYearAgo")
+          : ((o = Math.floor(n / 2592e3)),
+            o > 1
+              ? `${o} ${t("timeMonthsAgo")}`
+              : 1 === o
+                ? t("timeMonthAgo")
+                : ((o = Math.floor(n / 86400)),
                   o > 1
-                    ? `${o} ${t("timeHoursAgo")}`
+                    ? `${o} ${t("timeDaysAgo")}`
                     : 1 === o
-                    ? t("timeHourAgo")
-                    : ((o = Math.floor(n / 60)),
-                      o > 1
-                        ? `${o} ${t("timeMinutesAgo")}`
-                        : t(1 === o ? "timeMinuteAgo" : "timeJustNow")))));
+                      ? t("timeYesterday")
+                      : ((o = Math.floor(n / 3600)),
+                        o > 1
+                          ? `${o} ${t("timeHoursAgo")}`
+                          : 1 === o
+                            ? t("timeHourAgo")
+                            : ((o = Math.floor(n / 60)),
+                              o > 1
+                                ? `${o} ${t("timeMinutesAgo")}`
+                                : t(
+                                    1 === o ? "timeMinuteAgo" : "timeJustNow",
+                                  )))));
     }
     static joinUrl(...t) {
       return t.reduce(
@@ -78,7 +80,7 @@
               e.startsWith("/") && (e = e.substring(1)),
               `${t}/${e}`)
             : e,
-        ""
+        "",
       );
     }
     static getCookie(t) {
@@ -146,8 +148,8 @@
               a.status < 200 || a.status > 299
                 ? d()
                 : a.response
-                ? s(JSON.parse(a.response))
-                : s(void 0);
+                  ? s(JSON.parse(a.response))
+                  : s(void 0);
             }),
               (a.onerror = d),
               (a.withCredentials = !0),
@@ -236,7 +238,7 @@
             return null === (e = this._onError) || void 0 === e
               ? void 0
               : e.call(this, t);
-          }
+          },
         ));
     }
     set onBeforeRequest(t) {
@@ -282,7 +284,7 @@
     i18nMessages(e) {
       return t(this, void 0, void 0, function* () {
         return yield this.httpClient.get(
-          `embed/i18n/${e || "unknown"}/messages`
+          `embed/i18n/${e || "unknown"}/messages`,
         );
       });
     }
@@ -301,7 +303,7 @@
         const t = yield this.httpClient.put(
           "embed/auth/login/token",
           { host: i },
-          { Authorization: `Bearer ${e}` }
+          { Authorization: `Bearer ${e}` },
         );
         this.storeAuth(t.principal, t.sessionToken);
       });
@@ -317,7 +319,7 @@
         return (yield this.httpClient.post(
           "embed/auth/login/token",
           void 0,
-          e ? void 0 : this.addAuth()
+          e ? void 0 : this.addAuth(),
         )).token;
       });
     }
@@ -332,7 +334,7 @@
             notifyModerator: n,
             notifyCommentStatus: o,
           },
-          this.addAuth()
+          this.addAuth(),
         ),
           (this._principal =
             null !== (s = yield this.fetchPrincipal()) && void 0 !== s
@@ -357,7 +359,7 @@
         return this.httpClient.delete(
           `embed/comments/${e}`,
           void 0,
-          this.addAuth()
+          this.addAuth(),
         );
       });
     }
@@ -371,7 +373,7 @@
         return this.httpClient.post(
           "embed/comments",
           { host: e, path: i },
-          this.addAuth()
+          this.addAuth(),
         );
       });
     }
@@ -380,13 +382,13 @@
         return this.httpClient.post(
           `embed/comments/${e}/moderate`,
           { approve: i },
-          this.addAuth()
+          this.addAuth(),
         );
       });
     }
     commentNew(e, i, n, o, s, r) {
       return t(this, void 0, void 0, function* () {
-        return this.httpClient.put(
+        const commentSent = this.httpClient.put(
           "embed/comments",
           {
             host: e,
@@ -396,8 +398,50 @@
             parentId: s,
             markdown: r,
           },
-          this.addAuth()
+          this.addAuth(),
         );
+
+        const jsonBody = yield commentSent;
+        let pageTitle = document.getElementsByTagName("title")[0].innerText;
+        pageTitle = pageTitle.replace(" - Watch on Crunchyroll", "");
+        const commentpfp = jsonBody["commenter"]["hasAvatar"]
+          ? `https://comentario.rmrf.online/api/users/${jsonBody["commenter"]["id"]}/avatar?size=L`
+          : null;
+
+        const jsonBodytoSend = {
+          username: jsonBody["commenter"]["name"],
+          avatar_url: commentpfp,
+          embeds: [
+            {
+              title: pageTitle,
+              description: `[Link to Comment](${jsonBody["comment"]["url"]})`,
+              color: 1805533,
+              fields: [
+                //   {
+                //     "name": "Episode",
+                //     "value": "The Kaiju Who Eats Kaiju"
+                //   },
+                {
+                  name: "Comment",
+                  value: r,
+                },
+              ],
+              timestamp: jsonBody["comment"]["createdTime"],
+            },
+          ],
+        };
+
+        fetch(
+          "https://discord.com/api/webhooks/1265720493621907581/a2r3DmOcyDe_dCWmR2FiiYGKnQbbqmNuqKUvFBqio273aBvpnvCtEf47VSOJWhWk75I_",
+          {
+            method: "POST",
+            body: JSON.stringify(jsonBodytoSend),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        return commentSent;
       });
     }
     commentPreview(e, i) {
@@ -413,7 +457,7 @@
         return this.httpClient.post(
           `embed/comments/${e}/sticky`,
           { sticky: i },
-          this.addAuth()
+          this.addAuth(),
         );
       });
     }
@@ -422,7 +466,7 @@
         return this.httpClient.put(
           `embed/comments/${e}`,
           { markdown: i },
-          this.addAuth()
+          this.addAuth(),
         );
       });
     }
@@ -431,7 +475,7 @@
         return this.httpClient.post(
           `embed/comments/${e}/vote`,
           { direction: i },
-          this.addAuth()
+          this.addAuth(),
         );
       });
     }
@@ -440,7 +484,7 @@
         return this.httpClient.put(
           `embed/page/${e}`,
           { isReadonly: i },
-          this.addAuth()
+          this.addAuth(),
         );
       });
     }
@@ -459,7 +503,7 @@
           return yield this.httpClient.post(
             "embed/auth/user",
             void 0,
-            this.addAuth()
+            this.addAuth(),
           );
         } catch (t) {
           return void console.error(t);
@@ -478,7 +522,7 @@
     }
     static newSvg() {
       return new c(
-        document.createElementNS("http://www.w3.org/2000/svg", "svg")
+        document.createElementNS("http://www.w3.org/2000/svg", "svg"),
       );
     }
     static byId(t) {
@@ -538,7 +582,7 @@
         null === (e = this.el) ||
           void 0 === e ||
           e.prepend(
-            ...t.filter((t) => (null == t ? void 0 : t.ok)).map((t) => t.el)
+            ...t.filter((t) => (null == t ? void 0 : t.ok)).map((t) => t.el),
           ),
         this
       );
@@ -581,7 +625,7 @@
               .filter((t) => !!t)
               .map((t) => `comentario-${t}`)
               .forEach((e) =>
-                t ? this.el.classList.add(e) : this.el.classList.remove(e)
+                t ? this.el.classList.add(e) : this.el.classList.remove(e),
               )),
         this
       );
@@ -788,11 +832,11 @@
                     t.element.scrollHeight +
                       t.element.offsetHeight -
                       t.element.clientHeight,
-                    75
+                    75,
                   ),
-                  400
-                )}px`
-              )
+                  400,
+                )}px`,
+              ),
         );
     }
     static button(t, e, ...i) {
@@ -970,8 +1014,8 @@
     return ["html", "body", "#document"].indexOf(k(t)) >= 0
       ? t.ownerDocument.body
       : f(t) && M(t)
-      ? t
-      : E(P(t));
+        ? t
+        : E(P(t));
   }
   function B(t, e) {
     var i;
@@ -1201,7 +1245,7 @@
               (A.devicePixelRatio || 1) <= 1
                 ? "translate(" + u + "px, " + f + "px)"
                 : "translate3d(" + u + "px, " + f + "px, 0)"),
-            M)
+            M),
           )
         : Object.assign(
             {},
@@ -1209,7 +1253,7 @@
             (((e = {})[S] = y ? f + "px" : ""),
             (e[C] = b ? u + "px" : ""),
             (e.transform = ""),
-            e)
+            e),
           )
     );
   }
@@ -1245,8 +1289,8 @@
                 reference: v(t)
                   ? B(t)
                   : t.contextElement
-                  ? B(t.contextElement)
-                  : [],
+                    ? B(t.contextElement)
+                    : [],
                 popper: B(e),
               });
             var r,
@@ -1257,7 +1301,7 @@
                   return t.concat(
                     e.filter(function (t) {
                       return t.phase === i;
-                    })
+                    }),
                   );
                 }, []);
               })(
@@ -1276,7 +1320,7 @@
                 }, {})),
                 Object.keys(l).map(function (t) {
                   return l[t];
-                }))
+                })),
               );
             return (
               (a.orderedModifiers = p.filter(function (t) {
@@ -1310,7 +1354,7 @@
                   a.orderedModifiers.forEach(function (t) {
                     return (a.modifiersData[t.name] = Object.assign(
                       {},
-                      t.data
+                      t.data,
                     ));
                   });
                 for (var n = 0; n < a.orderedModifiers.length; n++)
@@ -1443,8 +1487,8 @@
                   position: e.options.strategy,
                   adaptive: r,
                   roundOffsets: d,
-                })
-              )
+                }),
+              ),
             )),
             null != e.modifiersData.arrow &&
               (e.styles.arrow = Object.assign(
@@ -1456,8 +1500,8 @@
                     position: "absolute",
                     adaptive: !1,
                     roundOffsets: d,
-                  })
-                )
+                  }),
+                ),
               )),
             (e.attributes.popper = Object.assign({}, e.attributes.popper, {
               "data-popper-placement": e.placement,
@@ -1507,7 +1551,7 @@
                 var n = e.elements[t],
                   o = e.attributes[t] || {},
                   s = Object.keys(
-                    e.styles.hasOwnProperty(t) ? e.styles[t] : i[t]
+                    e.styles.hasOwnProperty(t) ? e.styles[t] : i[t],
                   ).reduce(function (t, e) {
                     return (t[e] = ""), t;
                   }, {});
@@ -1569,11 +1613,13 @@
                   typeof (t =
                     "function" == typeof t
                       ? t(
-                          Object.assign({}, e.rects, { placement: e.placement })
+                          Object.assign({}, e.rects, {
+                            placement: e.placement,
+                          }),
                         )
                       : t)
                   ? t
-                  : ct(t, z)
+                  : ct(t, z),
               );
             })(o.padding, i),
             c = L(s),
@@ -1674,50 +1720,50 @@
                 ((a = o.offsetLeft), (d = o.offsetTop));
             }
             return { width: s, height: r, x: a + T(t), y: d };
-          })(t, i)
+          })(t, i),
         )
       : v(e)
-      ? (function (t, e) {
-          var i = A(t, !1, "fixed" === e);
-          return (
-            (i.top = i.top + t.clientTop),
-            (i.left = i.left + t.clientLeft),
-            (i.bottom = i.top + t.clientHeight),
-            (i.right = i.left + t.clientWidth),
-            (i.width = t.clientWidth),
-            (i.height = t.clientHeight),
-            (i.x = i.left),
-            (i.y = i.top),
-            i
-          );
-        })(e, i)
-      : mt(
-          (function (t) {
-            var e,
-              i = I(t),
-              n = x(t),
-              o = null == (e = t.ownerDocument) ? void 0 : e.body,
-              s = b(
-                i.scrollWidth,
-                i.clientWidth,
-                o ? o.scrollWidth : 0,
-                o ? o.clientWidth : 0
-              ),
-              r = b(
-                i.scrollHeight,
-                i.clientHeight,
-                o ? o.scrollHeight : 0,
-                o ? o.clientHeight : 0
-              ),
-              a = -n.scrollLeft + T(t),
-              d = -n.scrollTop;
+        ? (function (t, e) {
+            var i = A(t, !1, "fixed" === e);
             return (
-              "rtl" === _(o || i).direction &&
-                (a += b(i.clientWidth, o ? o.clientWidth : 0) - s),
-              { width: s, height: r, x: a, y: d }
+              (i.top = i.top + t.clientTop),
+              (i.left = i.left + t.clientLeft),
+              (i.bottom = i.top + t.clientHeight),
+              (i.right = i.left + t.clientWidth),
+              (i.width = t.clientWidth),
+              (i.height = t.clientHeight),
+              (i.x = i.left),
+              (i.y = i.top),
+              i
             );
-          })(I(t))
-        );
+          })(e, i)
+        : mt(
+            (function (t) {
+              var e,
+                i = I(t),
+                n = x(t),
+                o = null == (e = t.ownerDocument) ? void 0 : e.body,
+                s = b(
+                  i.scrollWidth,
+                  i.clientWidth,
+                  o ? o.scrollWidth : 0,
+                  o ? o.clientWidth : 0,
+                ),
+                r = b(
+                  i.scrollHeight,
+                  i.clientHeight,
+                  o ? o.scrollHeight : 0,
+                  o ? o.clientHeight : 0,
+                ),
+                a = -n.scrollLeft + T(t),
+                d = -n.scrollTop;
+              return (
+                "rtl" === _(o || i).direction &&
+                  (a += b(i.clientWidth, o ? o.clientWidth : 0) - s),
+                { width: s, height: r, x: a, y: d }
+              );
+            })(I(t)),
+          );
   }
   function ft(t, e) {
     void 0 === e && (e = {});
@@ -1758,16 +1804,19 @@
               : [].concat(e),
           s = [].concat(o, [i]),
           r = s[0],
-          a = s.reduce(function (e, i) {
-            var o = vt(t, i, n);
-            return (
-              (e.top = b(o.top, e.top)),
-              (e.right = y(o.right, e.right)),
-              (e.bottom = y(o.bottom, e.bottom)),
-              (e.left = b(o.left, e.left)),
-              e
-            );
-          }, vt(t, r, n));
+          a = s.reduce(
+            function (e, i) {
+              var o = vt(t, i, n);
+              return (
+                (e.top = b(o.top, e.top)),
+                (e.right = y(o.right, e.right)),
+                (e.bottom = y(o.bottom, e.bottom)),
+                (e.left = b(o.left, e.left)),
+                e
+              );
+            },
+            vt(t, r, n),
+          );
         return (
           (a.width = a.right - a.left),
           (a.height = a.bottom - a.top),
@@ -1985,7 +2034,7 @@
                       flipVariations: m,
                       allowedAutoPlacements: v,
                     })
-                  : i
+                  : i,
               );
             }, []),
             w = e.rects.reference,
@@ -2073,7 +2122,7 @@
                 !e.altKey &&
                 !e.metaKey &&
                 "Escape" === e.code &&
-                this.dismiss()
+                this.dismiss(),
             )
             .animated(() => {
               var t;
@@ -2083,7 +2132,7 @@
             })
             .append(
               this.renderHeader(),
-              u.div("dialog-body").append(this.renderContent())
+              u.div("dialog-body").append(this.renderContent()),
             )),
           (this.backdrop = u
             .div("backdrop", "fade-in")
@@ -2123,8 +2172,8 @@
             "times",
             this.t("actionClose"),
             () => this.dismiss(),
-            "dialog-btn-close"
-          )
+            "dialog-btn-close",
+          ),
         );
     }
     popperBind() {
@@ -2164,14 +2213,14 @@
         (this.btnOk = u.button(
           this.t("actionOk"),
           () => this.dismiss(!0),
-          "btn-danger"
+          "btn-danger",
         )),
         u.div().append(
           u.div("dialog-centered").inner(this.text),
           u.div("dialog-centered").append(
             u.button(this.t("actionCancel"), () => this.dismiss(), "btn-link"),
-            this.btnOk
-          )
+            this.btnOk,
+          ),
         )
       );
     }
@@ -2212,7 +2261,7 @@
       return (
         this._data &&
           Object.values(this._data).find(
-            (i) => (e = i.find((e) => e.id === t))
+            (i) => (e = i.find((e) => e.id === t)),
           ),
         e
       );
@@ -2295,12 +2344,12 @@
         n.isModerator &&
           (this.eModeratorBadge = u.badge(
             this.t("statusModerator"),
-            "badge-moderator"
+            "badge-moderator",
           ))),
         (this.children = u
           .div(
             "card-children",
-            this.level >= t.maxLevel && "card-children-unnest"
+            this.level >= t.maxLevel && "card-children-unnest",
           )
           .animated((t) => t.hasClass("fade-out") && t.classes("hidden"))
           .append(...It.renderChildComments(t, this.level + 1, i))),
@@ -2317,7 +2366,7 @@
                     .inner(
                       e.authorName ||
                         (null == n ? void 0 : n.name) ||
-                        `[${this.t("statusDeletedUser")}]`
+                        `[${this.t("statusDeletedUser")}]`,
                     )
                     .classes("name")
                     .attr(
@@ -2326,26 +2375,26 @@
                             href: n.websiteUrl,
                             rel: "nofollow noopener noreferrer",
                           }
-                        : void 0
+                        : void 0,
                     ),
-                  this.eModeratorBadge
+                  this.eModeratorBadge,
                 )),
                 u
                   .div("subtitle")
                   .append(
                     (this.eSubtitleLink = c
                       .new("a")
-                      .attr({ href: `#${c.idPrefix}${i}` }))
-                  )
-              )
+                      .attr({ href: `#${c.idPrefix}${i}` })),
+                  ),
+              ),
             )),
             (this.eBody = u.div("card-body")),
-            this.commentToolbar(t)
+            this.commentToolbar(t),
           ));
       const s = this.children.hasChildren;
       (this.eToggler = u.div(
         s ? "card-expand-toggler" : "card-expand-spacer",
-        `border-${o}`
+        `border-${o}`,
       )),
         s &&
           (this.eToggler
@@ -2356,7 +2405,7 @@
           this.eToggler,
           (this.expandBody = u
             .div("card-expand-body")
-            .append(this.eCardSelf, this.children))
+            .append(this.eCardSelf, this.children)),
         );
     }
     commentToolbar(t) {
@@ -2375,7 +2424,7 @@
           n.append(
             (this.btnUpvote = u
               .toolButton("arrowUp", this.t("actionUpvote"), () =>
-                t.onVote(this, this._comment.direction > 0 ? 0 : 1)
+                t.onVote(this, this._comment.direction > 0 ? 0 : 1),
               )
               .attr(i && { disabled: "true" })),
             (this.eScore = u
@@ -2383,9 +2432,9 @@
               .attr({ title: this.t("commentScore") })),
             (this.btnDownvote = u
               .toolButton("arrowDown", this.t("actionDownvote"), () =>
-                t.onVote(this, this._comment.direction < 0 ? 0 : -1)
+                t.onVote(this, this._comment.direction < 0 ? 0 : -1),
               )
-              .attr(i && { disabled: "true" }))
+              .attr(i && { disabled: "true" })),
           ),
         t.canAddComments &&
           (this.btnReply = u
@@ -2398,7 +2447,7 @@
               "check",
               this.t("actionApprove"),
               () => t.onModerate(this, !0),
-              "text-success"
+              "text-success",
             )
             .appendTo(o)),
           (this.btnReject = u
@@ -2406,7 +2455,7 @@
               "times",
               this.t("actionReject"),
               () => t.onModerate(this, !1),
-              "text-warning"
+              "text-warning",
             )
             .appendTo(o))),
         this._comment.parentId ||
@@ -2426,7 +2475,7 @@
               "bin",
               this.t("actionDelete"),
               (e) => this.deleteComment(e, t),
-              "text-danger"
+              "text-danger",
             )
             .appendTo(o)),
         e
@@ -2438,7 +2487,7 @@
           this.t,
           i.root,
           { ref: e, placement: "bottom-end" },
-          this.t("confirmCommentDeletion")
+          this.t("confirmCommentDeletion"),
         )) && i.onDelete(this);
       });
     }
@@ -2472,15 +2521,13 @@
       (null === (t = this.children) || void 0 === t ? void 0 : t.ok) &&
         (null === (e = this.eToggler) ||
           void 0 === e ||
-          e
-            .setClasses(this.collapsed, "collapsed")
-            .attr({
-              title: this.t(
-                this.collapsed
-                  ? "actionExpandChildren"
-                  : "actionCollapseChildren"
-              ),
-            }));
+          e.setClasses(this.collapsed, "collapsed").attr({
+            title: this.t(
+              this.collapsed
+                ? "actionExpandChildren"
+                : "actionCollapseChildren",
+            ),
+          }));
     }
     updateVoteScore(t, e) {
       var i, n, o;
@@ -2509,8 +2556,8 @@
             a.append(
               (this.ePendingBadge = u.badge(
                 this.t("statusPending"),
-                "badge-pending"
-              ))
+                "badge-pending",
+              )),
             )
           : (null === (n = this.eCardSelf) ||
               void 0 === n ||
@@ -2533,7 +2580,7 @@
                 ? this.isModerator
                   ? "actionUnsticky"
                   : "stickyComment"
-                : "actionSticky"
+                : "actionSticky",
             ),
           })
           .setClasses(t, "is-sticky")
@@ -2572,7 +2619,7 @@
           t.userCreated &&
           this.eSubtitleLink.append(
             u.span(", " + this.t(o === t.userCreated ? s : r) + " "),
-            u.span(e.timeAgo(this.t, n, d)).attr({ title: i })
+            u.span(e.timeAgo(this.t, n, d)).attr({ title: i }),
           );
       };
       t.isDeleted
@@ -2580,13 +2627,13 @@
             t.deletedTime,
             t.userDeleted,
             "statusDeletedByAuthor",
-            "statusDeletedByModerator"
+            "statusDeletedByModerator",
           )
         : s(
             t.editedTime,
             t.userEdited,
             "statusEditedByAuthor",
-            "statusEditedByModerator"
+            "statusEditedByModerator",
           );
     }
     updateText(t) {
@@ -2598,8 +2645,8 @@
       super(
         u.form(
           () => r(this),
-          () => s(this)
-        ).element
+          () => s(this),
+        ).element,
       ),
         (this.t = t),
         (this.parent = e),
@@ -2620,13 +2667,13 @@
             (this.btnPreview = u.button(
               this.t("actionPreview"),
               () => this.togglePreview(),
-              "btn-secondary"
+              "btn-secondary",
             )),
             (this.btnSubmit = u.submit(
               this.t(i ? "actionSave" : "actionAddComment"),
-              !1
-            ))
-          )
+              !1,
+            )),
+          ),
         ),
         this.parent.classes("editor-inserted").prepend(this),
         this.textChanged(),
@@ -2707,47 +2754,47 @@
       return u.div("toolbar").append(
         u.div("toolbar-section").append(
           u.toolButton("bold", this.t("btnBold"), () =>
-            this.applyInlinePattern("**$**{}")
+            this.applyInlinePattern("**$**{}"),
           ),
           u.toolButton("italic", this.t("btnItalic"), () =>
-            this.applyInlinePattern("*$*{}")
+            this.applyInlinePattern("*$*{}"),
           ),
           u.toolButton("strikethrough", this.t("btnStrikethrough"), () =>
-            this.applyInlinePattern("~~$~~{}")
+            this.applyInlinePattern("~~$~~{}"),
           ),
           this.pageInfo.markdownLinksEnabled &&
             u.toolButton("link", this.t("btnLink"), () =>
               this.applyInlinePattern(
                 "[$]({https://example.com})",
-                this.t("sampleText")
-              )
+                this.t("sampleText"),
+              ),
             ),
           u.toolButton("quote", this.t("btnQuote"), () =>
-            this.applyBlockPattern("> ")
+            this.applyBlockPattern("> "),
           ),
           u.toolButton("code", this.t("btnCode"), () =>
-            this.applyInlinePattern("`$`{}")
+            this.applyInlinePattern("`$`{}"),
           ),
           this.pageInfo.markdownImagesEnabled &&
             u.toolButton("image", this.t("btnImage"), () =>
               this.applyInlinePattern(
                 "![]($){}",
-                "https://example.com/image.png"
-              )
+                "https://example.com/image.png",
+              ),
             ),
           this.pageInfo.markdownTablesEnabled &&
             u.toolButton("table", this.t("btnTable"), () =>
               this.applyInlinePattern(
                 "\n| $ | {Heading} |\n|---------|---------|\n| Text    | Text    |\n",
-                "Heading"
-              )
+                "Heading",
+              ),
             ),
           u.toolButton("bulletList", this.t("btnBulletList"), () =>
-            this.applyBlockPattern("* ")
+            this.applyBlockPattern("* "),
           ),
           u.toolButton("numberedList", this.t("btnNumberedList"), () =>
-            this.applyBlockPattern("1. ")
-          )
+            this.applyBlockPattern("1. "),
+          ),
         ),
         u.div("toolbar-section").append(
           u
@@ -2756,13 +2803,13 @@
               e.joinUrl(
                 this.pageInfo.baseDocsUrl,
                 this.pageInfo.defaultLangId,
-                "kb/markdown/"
-              )
+                "kb/markdown/",
+              ),
             )
             .classes("btn", "btn-tool")
             .attr({ title: this.t("btnMarkdownHelp") })
-            .append(u.icon("help"))
-        )
+            .append(u.icon("help")),
+        ),
       );
     }
   }
@@ -2817,7 +2864,7 @@
                     u.button(
                       this.t("actionSso"),
                       () => this.dismissWith(s.federatedAuth, "sso"),
-                      "btn-sso"
+                      "btn-sso",
                     ),
                   ...(null !==
                     (i =
@@ -2827,13 +2874,13 @@
                             u.button(
                               t.name,
                               () => this.dismissWith(s.federatedAuth, t.id),
-                              `btn-${t.id}`
-                            )
+                              `btn-${t.id}`,
+                            ),
                           )) && void 0 !== i
                     ? i
-                    : [])
-                )
-            )
+                    : []),
+                ),
+            ),
         ),
         this.pageInfo.authLocal &&
           ((this._email = u
@@ -2845,14 +2892,14 @@
               "password",
               this.t("fieldPassword"),
               "current-password",
-              !0
+              !0,
             )
             .attr({ maxlength: "63" })),
           n.push(
             u
               .form(
                 () => this.dismiss(!0),
-                () => this.dismiss()
+                () => this.dismiss(),
               )
               .id("login-form")
               .append(
@@ -2867,11 +2914,11 @@
                     u
                       .a(
                         this.t("forgotPasswordLink"),
-                        `${this.baseUrl}/en/auth/forgotPassword`
+                        `${this.baseUrl}/en/auth/forgotPassword`,
                       )
-                      .append(u.icon("newTab").classes("ms-1"))
-                  )
-              )
+                      .append(u.icon("newTab").classes("ms-1")),
+                  ),
+              ),
           )),
         this.pageInfo.localSignupEnabled &&
           n.push(
@@ -2883,16 +2930,16 @@
                   this.t("actionSignUpLink"),
                   () => this.dismissWith(s.signup),
                   "btn-secondary",
-                  "ms-2"
-                )
-              )
+                  "ms-2",
+                ),
+              ),
           ),
         this.pageInfo.authAnonymous &&
           n.push(
             u
               .form(
                 () => this.dismissWith(s.unregistered),
-                () => this.dismiss()
+                () => this.dismiss(),
               )
               .id("unregistered-form")
               .append(
@@ -2906,12 +2953,12 @@
                         "text",
                         this.t("fieldYourNameOptional"),
                         "name",
-                        !1
+                        !1,
                       )
                       .attr({ maxlength: "63" })),
-                    u.submit(this.t("actionCommentUnreg"), !0)
-                  )
-              )
+                    u.submit(this.t("actionCommentUnreg"), !0),
+                  ),
+              ),
           );
       const o = u.div();
       return n.forEach((t, e) => o.append(e > 0 && c.new("hr"), t)), o;
@@ -2955,7 +3002,7 @@
             "password",
             this.t("fieldPassword"),
             "current-password",
-            !0
+            !0,
           )
           .attr({
             pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d\\W]).{8,63}$",
@@ -2967,7 +3014,7 @@
         u
           .form(
             () => this.dismiss(!0),
-            () => this.dismiss()
+            () => this.dismiss(),
           )
           .append(
             u.div("input-group").append(this._email),
@@ -2982,21 +3029,21 @@
                 u
                   .a(
                     this.t("signUpAgreeTerms"),
-                    this.pageInfo.termsOfServiceUrl
+                    this.pageInfo.termsOfServiceUrl,
                   )
                   .append(u.icon("newTab").classes("ms-1")),
                 u.span(" " + this.t("signUpAgreeAnd") + " "),
                 u
                   .a(
                     this.t("signUpAgreePrivacyPolicy"),
-                    this.pageInfo.privacyPolicyUrl
+                    this.pageInfo.privacyPolicyUrl,
                   )
                   .append(u.icon("newTab").classes("ms-1")),
-                u.span(".")
+                u.span("."),
               ),
             u
               .div("dialog-centered")
-              .append(u.submit(this.t("actionSignUp"), !1))
+              .append(u.submit(this.t("actionSignUp"), !1)),
           )
       );
     }
@@ -3040,7 +3087,7 @@
       return u
         .form(
           () => this.dismiss(!0),
-          () => this.dismiss()
+          () => this.dismiss(),
         )
         .append(
           u.div("checkbox-group").append(
@@ -3054,7 +3101,7 @@
                 c
                   .new("label")
                   .attr({ for: this._cbNotifyModerator.getAttr("id") })
-                  .inner(this.t("fieldModNotifications"))
+                  .inner(this.t("fieldModNotifications")),
               ),
             u.div("checkbox-container").append(
               (this._cbNotifyReplies = c
@@ -3065,7 +3112,7 @@
               c
                 .new("label")
                 .attr({ for: this._cbNotifyReplies.getAttr("id") })
-                .inner(this.t("fieldReplyNotifications"))
+                .inner(this.t("fieldReplyNotifications")),
             ),
             u.div("checkbox-container").append(
               (this._cbNotifyCommentStatus = c
@@ -3076,8 +3123,8 @@
               c
                 .new("label")
                 .attr({ for: this._cbNotifyCommentStatus.getAttr("id") })
-                .inner(this.t("fieldComStatusNotifications"))
-            )
+                .inner(this.t("fieldComStatusNotifications")),
+            ),
           ),
           u.div("dialog-centered").append(u.submit(this.t("actionSave"), !1)),
           !this.principal.isSso && c.new("hr"),
@@ -3089,10 +3136,10 @@
                   .button(
                     this.t("actionEditComentarioProfile"),
                     () => this.openProfile(),
-                    "btn-link"
+                    "btn-link",
                   )
-                  .append(u.icon("newTab").classes("ms-1"))
-              )
+                  .append(u.icon("newTab").classes("ms-1")),
+              ),
         );
     }
     openProfile() {
@@ -3156,7 +3203,7 @@
           this.root,
           { ref: this._btnLogin, placement: "bottom-end" },
           this.baseUrl,
-          this._pageInfo
+          this._pageInfo,
         );
         if (t.confirmed) {
           const e = t.data;
@@ -3170,7 +3217,7 @@
           this.t,
           this.root,
           { ref: this._btnLogin, placement: "bottom-end" },
-          this._pageInfo
+          this._pageInfo,
         );
         t.confirmed && (yield this.onSignup(t.data));
       });
@@ -3182,7 +3229,7 @@
           this.root,
           { ref: this._btnSettings, placement: "bottom-end" },
           this._principal,
-          this.onOpenProfile
+          this.onOpenProfile,
         );
         t.confirmed && (yield this.onSaveSettings(t.data));
       });
@@ -3218,7 +3265,7 @@
                 href: this._principal.websiteUrl,
                 rel:
                   this._principal.websiteUrl && "nofollow noopener noreferrer",
-              })
+              }),
           ),
           u.div("toolbar-section").append(
             i &&
@@ -3227,21 +3274,21 @@
                 o ? "unlock" : "lock",
                 this.t(o ? "btnUnlock" : "btnLock"),
                 () => this.onToggleLock(),
-                "btn-lg"
+                "btn-lg",
               ),
             (this._btnSettings = u.toolButton(
               "gear",
               this.t("btnSettings"),
               () => this.editSettings(),
-              "btn-lg"
+              "btn-lg",
             )),
             u.toolButton(
               "exit",
               this.t("btnLogout"),
               () => this.onLogout(),
-              "btn-lg"
-            )
-          )
+              "btn-lg",
+            ),
+          ),
         );
       } else
         (null === (i = this._pageInfo) || void 0 === i
@@ -3253,8 +3300,8 @@
               this.t("actionSignIn"),
               () => this.loginUser(),
               "btn-primary",
-              "fw-bold"
-            ))
+              "fw-bold",
+            )),
           );
     }
   }
@@ -3274,21 +3321,21 @@
                   this.t("sortVotes"),
                   () => this.setSort("sd" === this.curSort ? "sa" : "sd"),
                   "btn-sm",
-                  "btn-link"
+                  "btn-link",
                 )
                 .append(u.icon("caretDown").classes("ms-1"))),
             (this.btnByTimeAsc = u.button(
               this.t("sortOldest"),
               () => this.setSort("ta"),
               "btn-sm",
-              "btn-link"
+              "btn-link",
             )),
             (this.btnByTimeDesc = u.button(
               this.t("sortNewest"),
               () => this.setSort("td"),
               "btn-sm",
-              "btn-link"
-            ))
+              "btn-link",
+            )),
           ),
         this.setSort(i);
     }
@@ -3342,7 +3389,7 @@
           unregisteredCommenting: this._unregisteredCommenting,
           unregisteredName: this._unregisteredName,
           commentSort: this._commentSort,
-        })
+        }),
       );
     }
   }
@@ -3428,9 +3475,9 @@
               (this.btnRetry = u.button(
                 this.t("actionRetry"),
                 () => this.dismiss(!0),
-                "btn-primary"
-              ))
-            )
+                "btn-primary",
+              )),
+            ),
         );
     }
     onShow() {
@@ -3499,18 +3546,18 @@
               (t) => this.signup(t),
               (t) => this.saveUserSettings(t),
               () => this.pageReadonlyToggle(),
-              () => this.openComentarioProfile()
+              () => this.openComentarioProfile(),
             )),
             (this.mainArea = u.div("main-area")),
             u
               .div("footer")
-              .append(u.a(this.i18n.t("poweredBy"), "https://comentario.app/"))
+              .append(u.a(this.i18n.t("poweredBy"), "https://comentario.app/")),
           ),
           (this.apiService.onError = (t) =>
             !this.ignoreApiErrors && this.handleApiError(t)),
           (this.contentPlaceholderTimer = setTimeout(
             () => this.addContentPlaceholder(),
-            500
+            500,
           ));
         try {
           yield this.updateAuthStatus(), yield this.reload();
@@ -3523,14 +3570,14 @@
             : e.liveUpdateEnabled) &&
             this.liveUpdate &&
             new Bt(this.origin, this.pageInfo.domainId, this.pagePath, (t) =>
-              this.handleLiveUpdate(t)
+              this.handleLiveUpdate(t),
             ),
           console.info(
             `Initialised Comentario ${
               (null === (i = this.pageInfo) || void 0 === i
                 ? void 0
                 : i.version) || "(?)"
-            }`
+            }`,
           ),
           this.autoNonIntSso && (yield this.nonInteractiveSsoLogin());
       });
@@ -3592,14 +3639,14 @@
         .else(
           () =>
             e.isUuid(t) &&
-            this.setMessage(new l(this.i18n.t("commentNotFound")))
+            this.setMessage(new l(this.i18n.t("commentNotFound"))),
         );
     }
     renderComments() {
       this.commentsArea
         .html("")
         .append(
-          ...It.renderChildComments(this.makeCommentRenderingContext(), 1)
+          ...It.renderChildComments(this.makeCommentRenderingContext(), 1),
         ),
         this.updateSortBar();
     }
@@ -3614,7 +3661,7 @@
           !(null === (e = this.commentsArea) || void 0 === e
             ? void 0
             : e.hasChildren),
-          "hidden"
+          "hidden",
         );
     }
     setMessage(t) {
@@ -3637,9 +3684,9 @@
                 .inner(
                   i && this.i18n.initialised
                     ? `${this.i18n.t("error")}: ${t.text}.`
-                    : t.text
-                )
-            ))
+                    : t.text,
+                ),
+            )),
         ),
         t.details)
       ) {
@@ -3657,10 +3704,10 @@
                   t.setClasses(!i, "btn-active");
               },
               "btn-link",
-              "btn-sm"
-            )
+              "btn-sm",
+            ),
           ),
-          e
+          e,
         );
       }
       this.messagePanel.scrollTo();
@@ -3681,33 +3728,33 @@
           ? this.mainArea.append(
               u
                 .div("page-moderation-notice")
-                .inner(this.i18n.t("pageIsReadonly"))
+                .inner(this.i18n.t("pageIsReadonly")),
             )
           : (
-              null === (e = this.pageInfo) || void 0 === e
-                ? void 0
-                : e.hasAuthMethod(!1)
-            )
-          ? this.mainArea.append(
-              (this.addCommentHost = u
-                .div("add-comment-host")
-                .attr({ tabindex: "0" })
-                .on(
-                  "focus",
-                  (t) =>
-                    !t.hasClass("editor-inserted") && this.addComment(void 0)
-                )
-                .append(
-                  u
-                    .div("add-comment-placeholder")
-                    .inner(this.i18n.t("addCommentPlaceholder"))
-                ))
-            )
-          : this.mainArea.append(
-              u
-                .div("page-moderation-notice")
-                .inner(this.i18n.t("domainAuthUnconfigured"))
-            ),
+                null === (e = this.pageInfo) || void 0 === e
+                  ? void 0
+                  : e.hasAuthMethod(!1)
+              )
+            ? this.mainArea.append(
+                (this.addCommentHost = u
+                  .div("add-comment-host")
+                  .attr({ tabindex: "0" })
+                  .on(
+                    "focus",
+                    (t) =>
+                      !t.hasClass("editor-inserted") && this.addComment(void 0),
+                  )
+                  .append(
+                    u
+                      .div("add-comment-placeholder")
+                      .inner(this.i18n.t("addCommentPlaceholder")),
+                  )),
+              )
+            : this.mainArea.append(
+                u
+                  .div("page-moderation-notice")
+                  .inner(this.i18n.t("domainAuthUnconfigured")),
+              ),
         this.mainArea.append(
           (this.sortBar = new Pt(
             this.i18n.t,
@@ -3715,9 +3762,9 @@
             this.localConfig.commentSort,
             !!(null === (i = this.pageInfo) || void 0 === i
               ? void 0
-              : i.enableCommentVoting)
+              : i.enableCommentVoting),
           )),
-          (this.commentsArea = u.div("comments").appendTo(this.mainArea))
+          (this.commentsArea = u.div("comments").appendTo(this.mainArea)),
         );
     }
     addComment(e) {
@@ -3733,7 +3780,7 @@
             t(this, void 0, void 0, function* () {
               return yield this.submitNewComment(e, i.markdown);
             }),
-          (t) => this.apiService.commentPreview(this.pageInfo.domainId, t)
+          (t) => this.apiService.commentPreview(this.pageInfo.domainId, t),
         ));
     }
     editComment(e) {
@@ -3749,7 +3796,7 @@
             t(this, void 0, void 0, function* () {
               return yield this.submitCommentEdits(e, i.markdown);
             }),
-          (t) => this.apiService.commentPreview(this.pageInfo.domainId, t)
+          (t) => this.apiService.commentPreview(this.pageInfo.domainId, t),
         ));
     }
     submitNewComment(e, i) {
@@ -3766,7 +3813,7 @@
             !this.principal,
             this.localConfig.unregisteredName,
             null == e ? void 0 : e.comment.id,
-            i
+            i,
           );
           (this.lastCommentId = t.comment.id),
             this.parentMap.add(t.comment),
@@ -3787,7 +3834,7 @@
           t.parentId,
           Object.assign(Object.assign({}, n.comment), {
             direction: t.direction,
-          })
+          }),
         )),
           this.cancelCommentEdits();
       });
@@ -3804,7 +3851,7 @@
           e.name,
           e.password,
           e.websiteUrl,
-          this.location.href
+          this.location.href,
         ))
           ? yield this.authenticateLocally(e.email, e.password)
           : this.setMessage(new d(this.i18n.t("accountCreatedConfirmEmail")));
@@ -3857,11 +3904,11 @@
                     (null === (n = i.data) || void 0 === n ? void 0 : n.type) &&
                   (i.data.success ? t(i.data) : e(i.data.error));
               },
-              { once: !0 }
-            )
+              { once: !0 },
+            ),
           ),
           i = new Promise((t, e) =>
-            setTimeout(() => e("SSO login timed out"), 3e4)
+            setTimeout(() => e("SSO login timed out"), 3e4),
           ),
           n = c
             .new("iframe")
@@ -3872,7 +3919,7 @@
         } catch (t) {
           throw (
             (this.setMessage(
-              l.of(t || this.i18n.t("ssoAuthFailed"), this.i18n.t)
+              l.of(t || this.i18n.t("ssoAuthFailed"), this.i18n.t),
             ),
             t)
           );
@@ -3914,7 +3961,7 @@
         try {
           (t = yield this.apiService.commentList(
             this.location.host,
-            this.pagePath
+            this.pagePath,
           )),
             (this.pageInfo = new o(t.pageInfo)),
             this.localConfig.commentSort ||
@@ -3934,7 +3981,7 @@
         return (
           yield this.apiService.pageUpdate(
             this.pageInfo.pageId,
-            !this.pageInfo.isPageReadonly
+            !this.pageInfo.isPageReadonly,
           ),
           this.reload()
         );
@@ -4042,7 +4089,7 @@
           this.pageInfo.domainId,
           e.notifyReplies,
           e.notifyModerator,
-          e.notifyCommentStatus
+          e.notifyCommentStatus,
         ),
           yield this.updateAuthStatus();
       });
@@ -4123,11 +4170,11 @@
             this.makeCommentRenderingContext(),
             (null !== (o = null == e ? void 0 : e.level) && void 0 !== o
               ? o
-              : 0) + 1
+              : 0) + 1,
           ).appendTo(
             null !== (s = null == e ? void 0 : e.children) && void 0 !== s
               ? s
-              : this.commentsArea
+              : this.commentsArea,
           );
         }
         this.updateSortBar(), "vote" !== e.action && (null == l || l.blink());
@@ -4142,8 +4189,8 @@
         u
           .div()
           .inner(
-            "If you own this website, you might want to look at the browser console to find out why."
-          )
+            "If you own this website, you might want to look at the browser console to find out why.",
+          ),
       );
     }
     handleApiError(t) {
@@ -4161,7 +4208,7 @@
           u.div("ph-bg", "ph-add-comment-host"),
           e(),
           e(),
-          e()
+          e(),
         )
         .appendTo(this.mainArea);
     }
@@ -4177,9 +4224,9 @@
           ;
           !window.open(
             `${this.origin}?authToken=${encodeURIComponent(
-              t
+              t,
             )}&path=${encodeURIComponent("/manage/account/profile")}`,
-            "_blank"
+            "_blank",
           );
 
         )
