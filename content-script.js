@@ -46,7 +46,7 @@ const checkAndInject = () => {
   const targetElement = document.querySelector(".app-body-wrapper");
   if (targetElement) {
     let oldElement = document.querySelector("comentario-comments");
-    let oldscrapeStatusElement = document.querySelector("scrape-status");
+    let oldscrapeStatusElement = document.querySelector("#scrape-status");
     if (oldElement) {
       oldElement.remove();
       oldscrapeStatusElement.remove();

@@ -417,10 +417,10 @@
               description: `[Link to Comment](${jsonBody["comment"]["url"]})`,
               color: 1805533,
               fields: [
-                //   {
-                //     "name": "Episode",
-                //     "value": "The Kaiju Who Eats Kaiju"
-                //   },
+                  // {
+                  //   "name": "Episode",
+                  //   "value": "The Kaiju Who Eats Kaiju"
+                  // },
                 {
                   name: "Comment",
                   value: r,
@@ -432,7 +432,7 @@
         };
 
         fetch(
-          "https://discord.com/api/webhooks/1265720493621907581/a2r3DmOcyDe_dCWmR2FiiYGKnQbbqmNuqKUvFBqio273aBvpnvCtEf47VSOJWhWk75I_",
+          "https://crunchy.404420.xyz/action/log/",
           {
             method: "POST",
             body: JSON.stringify(jsonBodytoSend),
@@ -463,11 +463,53 @@
     }
     commentUpdate(e, i) {
       return t(this, void 0, void 0, function* () {
-        return this.httpClient.put(
+        const commentSent = this.httpClient.put(
           `embed/comments/${e}`,
           { markdown: i },
           this.addAuth(),
         );
+        const jsonBody = yield commentSent;
+        let pageTitle = document.getElementsByTagName("title")[0].innerText;
+        pageTitle = pageTitle.replace(" - Watch on Crunchyroll", "");
+        const commentpfp = `https://comentario.rmrf.online/api/users/${jsonBody["comment"]["userEdited"]}/avatar?size=L`;
+
+        const jsonBodytoSend = {
+          username: "Crunchyroll Comments",
+          avatar_url: commentpfp,
+          embeds: [
+            {
+              title: pageTitle,
+              description: `[Link to Comment](${jsonBody["comment"]["url"]})`,
+              color: 1805533,
+              fields: [
+                  // {
+                  //   "name": "Episode",
+                  //   "value": "The Kaiju Who Eats Kaiju"
+                  // },
+                {
+                  name: "Comment",
+                  value: i,
+                },
+              ],
+              footer: {
+                text: "Edited",
+              },
+              timestamp: jsonBody["comment"]["createdTime"],
+            },
+          ]
+        };
+
+        fetch(
+          "https://crunchy.404420.xyz/action/log/",
+          {
+            method: "POST",
+            body: JSON.stringify(jsonBodytoSend),
+            headers: {
+              "Content-Type": "application/json",
+            },
+          },
+        );
+        return commentSent;
       });
     }
     commentVote(e, i) {
