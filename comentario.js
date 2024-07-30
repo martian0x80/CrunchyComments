@@ -417,10 +417,10 @@
               description: `[Link to Comment](${jsonBody["comment"]["url"]})`,
               color: 1805533,
               fields: [
-                  // {
-                  //   "name": "Episode",
-                  //   "value": "The Kaiju Who Eats Kaiju"
-                  // },
+                // {
+                //   "name": "Episode",
+                //   "value": "The Kaiju Who Eats Kaiju"
+                // },
                 {
                   name: "Comment",
                   value: r,
@@ -431,16 +431,13 @@
           ],
         };
 
-        fetch(
-          "https://crunchy.404420.xyz/action/log/",
-          {
-            method: "POST",
-            body: JSON.stringify(jsonBodytoSend),
-            headers: {
-              "Content-Type": "application/json",
-            },
+        fetch("https://crunchy.404420.xyz/action/log/", {
+          method: "POST",
+          body: JSON.stringify(jsonBodytoSend),
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+        });
         return commentSent;
       });
     }
@@ -471,10 +468,12 @@
         const jsonBody = yield commentSent;
         let pageTitle = document.getElementsByTagName("title")[0].innerText;
         pageTitle = pageTitle.replace(" - Watch on Crunchyroll", "");
-        const commentpfp = `https://comentario.rmrf.online/api/users/${jsonBody["comment"]["userEdited"]}/avatar?size=L`;
+        const commentpfp = jsonBody["comment"]["userEdited"]
+          ? `https://comentario.rmrf.online/api/users/${jsonBody["comment"]["userEdited"]}/avatar?size=L`
+          : null;
 
         const jsonBodytoSend = {
-          username: "Crunchyroll Comments",
+          username: null,
           avatar_url: commentpfp,
           embeds: [
             {
@@ -482,10 +481,10 @@
               description: `[Link to Comment](${jsonBody["comment"]["url"]})`,
               color: 1805533,
               fields: [
-                  // {
-                  //   "name": "Episode",
-                  //   "value": "The Kaiju Who Eats Kaiju"
-                  // },
+                // {
+                //   "name": "Episode",
+                //   "value": "The Kaiju Who Eats Kaiju"
+                // },
                 {
                   name: "Comment",
                   value: i,
@@ -496,19 +495,16 @@
               },
               timestamp: jsonBody["comment"]["createdTime"],
             },
-          ]
+          ],
         };
 
-        fetch(
-          "https://crunchy.404420.xyz/action/log/",
-          {
-            method: "POST",
-            body: JSON.stringify(jsonBodytoSend),
-            headers: {
-              "Content-Type": "application/json",
-            },
+        fetch("https://crunchy.404420.xyz/action/log/", {
+          method: "POST",
+          body: JSON.stringify(jsonBodytoSend),
+          headers: {
+            "Content-Type": "application/json",
           },
-        );
+        });
         return commentSent;
       });
     }

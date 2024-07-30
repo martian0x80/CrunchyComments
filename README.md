@@ -12,7 +12,7 @@
 
 [![UV4C4ybeBTsZt43U4xis](https://github.com/user-attachments/assets/6a6c5caa-f384-4201-bc2e-023bfd7687c4)](https://chromewebstore.google.com/detail/crunchy-comments/feapmagcaclnifojeninfmpdedbiafdd?authuser=0&hl=en)
 [![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
-<a href="https://discord.gg/a3bCfxxt"><img src="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/636e0b5493894cf60b300587_full_logo_white_RGB.svg" alt="discord" width="200" height="60"/></a>
+<a href="https://discord.gg/MW3rgwTcF9"><img src="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/636e0b5493894cf60b300587_full_logo_white_RGB.svg" alt="discord" width="200" height="60"/></a>
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/commits/master)
 [![GitHub issues](https://img.shields.io/github/issues/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/issues)
@@ -34,7 +34,7 @@
 <br/>
 
 <div align="center">
-    <a href="https://discord.gg/a3bCfxxt">Discord</a> |
+    <a href="https://discord.gg/MW3rgwTcF9">Discord</a> |
     <a href="mailto:nevergonnaletyoudown@proxiedmail.com">Mail</a>
 </div>
 <br/>
