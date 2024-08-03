@@ -60,6 +60,7 @@ const checkAndInject = () => {
 			"display: flex; justify-content: center; z-index: 999; max-width: fit-content; margin: 0 auto;";
 		let comentarioElement = document.createElement("comentario-comments");
 		comentarioElement.setAttribute("max-level", "5");
+		// It seems "page-id" does not have any effect, so changes are moved to comentario.js
 		targetElement.insertAdjacentElement("afterend", comentarioElement);
 		targetElement.insertAdjacentElement("afterend", scrapeStatusElement);
 	} else {
