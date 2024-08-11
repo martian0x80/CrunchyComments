@@ -7,12 +7,17 @@
 <a href="images/HimeComments.jpeg">
     <img alt="Crunchyroll Comments logo" src="images/HimeComments.jpeg" style="width: 25%; height: auto; max-width: 300px; max-height: 300px">
 </a>
-<br/>
+<br/><br/>
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V711OXB9)
 <br/>
 
 [![UV4C4ybeBTsZt43U4xis](https://github.com/user-attachments/assets/6a6c5caa-f384-4201-bc2e-023bfd7687c4)](https://chromewebstore.google.com/detail/crunchy-comments/feapmagcaclnifojeninfmpdedbiafdd?authuser=0&hl=en)
 [![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
+<br/>
+<br/>
 <a href="https://discord.gg/MW3rgwTcF9"><img src="https://cdn.prod.website-files.com/6257adef93867e50d84d30e2/636e0b5493894cf60b300587_full_logo_white_RGB.svg" alt="discord" width="200" height="60"/></a>
+<br/>
 
 [![GitHub last commit](https://img.shields.io/github/last-commit/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/commits/master)
 [![GitHub issues](https://img.shields.io/github/issues/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/issues)
