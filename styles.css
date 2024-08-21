@@ -1,0 +1,10 @@
+.crunchy-comments-timestamp-block {
+    color: orange;
+    font-weight: bold;
+    background: rgba(255, 165, 0, 0.4);
+    padding: 0 4px;
+    font-size: 1.1rem;
+    border-radius: 4px;
+    vertical-align: middle;
+    cursor: pointer;
+}
