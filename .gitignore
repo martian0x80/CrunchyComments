@@ -1,1 +1,4 @@
 .venv
+
+# no need to share the IDE configuration files
+.idea

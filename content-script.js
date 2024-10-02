@@ -63,6 +63,8 @@ const checkAndInject = () => {
 		// It seems "page-id" does not have any effect, so changes are moved to comentario.js
 		targetElement.insertAdjacentElement("afterend", comentarioElement);
 		targetElement.insertAdjacentElement("afterend", scrapeStatusElement);
+
+		reattachCommentObserver()
 	} else {
 		requestAnimationFrame(checkAndInject);
 	}
@@ -85,6 +87,67 @@ const restoreComments = () => {
 			},
 		);
 };
+
+/* Waits for the first element that matches the selector to appear in the DOM */
+/** @returns Promise<Node> */
+async function getBodyElementEventually(selector) {
+	return new Promise((resolve) => {
+		const onMutation = (mutations, observer) => {
+			const elem = document.querySelector(selector);
+			if (elem !== null) {
+				observer.disconnect()
+				resolve(elem)
+			}
+		}
+		const observer = new MutationObserver(onMutation)
+		observer.observe(document.body, {
+			subtree: true,
+			childList: true,
+			attributes: true,
+		})
+		onMutation(null, observer)
+	})
+}
+
+/* Takes the comment holder and replaces all spoilers with a span element that can be clicked to reveal the spoiler */
+function replaceSpoilersWithHtml(regex, commentHolder) {
+	for (const comment of commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p:not(:has(span.crunchy-comments-spoiler-block))")) {
+		comment.innerHTML = comment.innerHTML.replaceAll(regex, (match) => `<span class="crunchy-comments-spoiler-block">${match.slice(2,match.length-2).trim()}</span>`)
+		comment.querySelectorAll("span.crunchy-comments-spoiler-block").forEach((spoiler) => {
+			spoiler.addEventListener("click", () => {
+				spoiler.classList.toggle("revealed")
+			})
+		})
+	}
+}
+
+const spoilerRegex = /\|\|.+?\|\|/gs
+/* Renders features on the given comment holder */
+const renderFeatures = async (commentHolder) => {
+	replaceSpoilersWithHtml(spoilerRegex, commentHolder)
+}
+
+let commentObserver = null;
+/* Reattaches the comment observer to the new comment holder */
+const reattachCommentObserver = async () => {
+	if (commentObserver !== null) commentObserver.disconnect()
+
+	/* Render features on existing comments + rerender on changes */
+	const commentHolder = await getBodyElementEventually("comentario-comments .comentario-comments")
+	const onMutation = (mutationsList, observer) => {
+		commentObserver.disconnect();
+
+		renderFeatures(commentHolder)
+
+		observer.observe(commentHolder, {
+			subtree: true,
+			childList: true,
+			characterData: true
+		})
+	}
+	commentObserver = new MutationObserver(onMutation)
+	onMutation(null, commentObserver)
+}
 
 // EntryPoint
 document.addEventListener("readystatechange", (event) => {
