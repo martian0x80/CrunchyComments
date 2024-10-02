@@ -19,19 +19,19 @@ const appendScript = () => {
 appendScript();
 
 const checkAndUpdate = () => {
-	window.addEventListener("popstate", function (event) {
+	window.addEventListener("popstate", async function (event) {
 		restoreComments();
-		checkAndInject();
+		await checkAndInject();
 	});
 
 	const bodyList = document.querySelector("body");
 
 	const observer = new MutationObserver(function (mutations) {
-		mutations.forEach(function (mutation) {
+		mutations.forEach(async function (mutation) {
 			if (oldHref != document.location.href) {
 				oldHref = document.location.href;
 				restoreComments();
-				checkAndInject();
+				await checkAndInject();
 			}
 		});
 	});
@@ -42,7 +42,7 @@ const checkAndUpdate = () => {
 	observer.observe(bodyList, config);
 };
 
-const checkAndInject = () => {
+const checkAndInject = async () => {
 	const targetElement = document.querySelector(".app-body-wrapper");
 	if (targetElement) {
 		let oldElement = document.querySelector("comentario-comments");
@@ -64,7 +64,7 @@ const checkAndInject = () => {
 		targetElement.insertAdjacentElement("afterend", comentarioElement);
 		targetElement.insertAdjacentElement("afterend", scrapeStatusElement);
 
-		reattachCommentObserver()
+		await reattachCommentObserver();
 	} else {
 		requestAnimationFrame(checkAndInject);
 	}
@@ -90,70 +90,68 @@ const restoreComments = () => {
 
 /* Waits for the first element that matches the selector to appear in the DOM */
 /** @returns Promise<Node> */
-async function getBodyElementEventually(selector) {
+const getBodyElementEventually = async function(selector) {
 	return new Promise((resolve) => {
-		const onMutation = (mutations, observer) => {
+		function resolveIfPresent() {
 			const elem = document.querySelector(selector);
 			if (elem !== null) {
-				observer.disconnect()
-				resolve(elem)
+				resolve(elem);
+			} else {
+				requestAnimationFrame(resolveIfPresent);
 			}
 		}
-		const observer = new MutationObserver(onMutation)
-		observer.observe(document.body, {
-			subtree: true,
-			childList: true,
-			attributes: true,
-		})
-		onMutation(null, observer)
+		resolveIfPresent();
 	})
-}
+};
 
 /* Takes the comment holder and replaces all spoilers with a span element that can be clicked to reveal the spoiler */
-function replaceSpoilersWithHtml(regex, commentHolder) {
+const replaceSpoilersWithHtml = function(regex, commentHolder) {
 	for (const comment of commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p:not(:has(span.crunchy-comments-spoiler-block))")) {
-		comment.innerHTML = comment.innerHTML.replaceAll(regex, (match) => `<span class="crunchy-comments-spoiler-block">${match.slice(2,match.length-2).trim()}</span>`)
+		comment.innerHTML = comment.innerHTML.replaceAll(regex, (match) => `<span class="crunchy-comments-spoiler-block">${match.slice(2,match.length-2).trim()}</span>`);
 		comment.querySelectorAll("span.crunchy-comments-spoiler-block").forEach((spoiler) => {
 			spoiler.addEventListener("click", () => {
-				spoiler.classList.toggle("revealed")
-			})
-		})
+				spoiler.classList.toggle("revealed");
+			});
+		});
 	}
-}
+};
 
-const spoilerRegex = /\|\|.+?\|\|/gs
+const spoilerRegex = /\|\|.+?\|\|/gs;
 /* Renders features on the given comment holder */
-const renderFeatures = async (commentHolder) => {
-	replaceSpoilersWithHtml(spoilerRegex, commentHolder)
-}
+const renderFeatures = (commentHolder) => {
+	replaceSpoilersWithHtml(spoilerRegex, commentHolder);
+};
 
 let commentObserver = null;
 /* Reattaches the comment observer to the new comment holder */
 const reattachCommentObserver = async () => {
-	if (commentObserver !== null) commentObserver.disconnect()
-
 	/* Render features on existing comments + rerender on changes */
-	const commentHolder = await getBodyElementEventually("comentario-comments .comentario-comments")
+	const commentHolder = await getBodyElementEventually("comentario-comments .comentario-comments");
 	const onMutation = (mutationsList, observer) => {
-		commentObserver.disconnect();
+		observer.disconnect();
 
-		renderFeatures(commentHolder)
+		renderFeatures(commentHolder);
 
-		observer.observe(commentHolder, {
-			subtree: true,
-			childList: true,
-			characterData: true
-		})
+		/* Only reobserve the comment holder if the observer has not already been replaced */
+		if (commentObserver === observer) {
+			observer.observe(commentHolder, {
+				subtree: true,
+				childList: true,
+				characterData: true
+			});
+		}
 	}
-	commentObserver = new MutationObserver(onMutation)
-	onMutation(null, commentObserver)
-}
+
+	if (commentObserver !== null) commentObserver.disconnect();
+	commentObserver = new MutationObserver(onMutation);
+	onMutation(null, commentObserver);
+};
 
 // EntryPoint
-document.addEventListener("readystatechange", (event) => {
+document.addEventListener("readystatechange", async (event) => {
 	if (document.readyState === "complete") {
 		restoreComments();
-		checkAndInject();
+		await checkAndInject();
 		checkAndUpdate();
 	}
 });
