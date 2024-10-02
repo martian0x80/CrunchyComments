@@ -1,0 +1,45 @@
+.crunchy-comments-spoiler-block {
+    color: transparent;
+    background: rgba(127, 127, 127, 0.6);
+    padding: 0 4px;
+    border-radius: 4px;
+    vertical-align: middle;
+    cursor: pointer;
+    font-family: monospace;
+    position: relative;
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+    transition:
+            background 0.2s,
+            color 0.2s;
+}
+
+.crunchy-comments-spoiler-block:hover {
+    background: rgba(127, 127, 127, 0.8);
+}
+
+.crunchy-comments-spoiler-block.revealed {
+    background: rgba(127, 127, 127, 0.3);
+    color: revert;
+    -webkit-user-select: auto; /* Safari */
+    -ms-user-select: auto; /* IE 10 and IE 11 */
+    user-select: auto; /* Standard syntax */
+}
+
+.crunchy-comments-spoiler-block:hover::after {
+    content: "Spoiler (click to reveal)";
+    position: absolute;
+    color: white;
+    width: max-content;
+    background: gray;
+    padding: 0.1em 0.5em;
+    border-radius: 0.4em;
+    bottom: 100%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    font-size: x-small;
+}
+.crunchy-comments-spoiler-block.revealed:hover::after {
+    content: "Spoiler (click to hide)";
+}
