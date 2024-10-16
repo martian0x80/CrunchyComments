@@ -3537,7 +3537,7 @@
         (this.parentMap = new kt()),
         (this.ignoreApiErrors = !1),
         (this.pagePath =
-          this.getAttribute("page-id") || this.location.pathname.replace("/de/", "/").replace("/fr/", "/").replace("/pt-br/", "/").replace("/es/", "/")),
+          this.getAttribute("page-id") || this.location.pathname.replace("/de/", "/").replace("/fr/", "/").replace("/pt-br/", "/").replace("/es/", "/").replace("/it/", "/").replace("/ar/", "/").replace("/es-es/", "/").replace("/pt-pt/", "/").replace("/ru/", "/").replace("/hi/", "/")),
         (this.cssOverride = this.getAttribute("css-override")),
         (this.noFonts = "true" === this.getAttribute("no-fonts")),
         (this.autoInit = "false" !== this.getAttribute("auto-init")),
