@@ -182,26 +182,31 @@ const reattachCommentObserver = async () => {
 }
 
 // Restore comments based on the current URL
-const restoreComments = () => {
+const restoreComments = async () => {
 	const currentUrl = document.location.href
 
 	if (currentUrl.includes("watch") || currentUrl.includes("series"))
-		// if (checkReleaseDate()) {
-		fetch("https://crunchy.404420.xyz/restore?url=" + currentUrl)
-			.then((response) => response.json())
-			.then((data) => {
-				const scrapeStatusElement = document.getElementById("scrape-status")
-				if (scrapeStatusElement) {
-					scrapeStatusElement.innerText = data.message || "Restoring old comments..."
-				}
-			})
-			.catch(() => {
-				const scrapeStatusElement = document.getElementById("scrape-status")
-				if (scrapeStatusElement) {
-					scrapeStatusElement.innerText = "Error restoring comments"
-				}
-			})
-	// }
+		if (await checkReleaseDate()) {
+			fetch("https://crunchy.404420.xyz/restore?url=" + currentUrl)
+				.then((response) => response.json())
+				.then((data) => {
+					const scrapeStatusElement = document.getElementById("scrape-status")
+					if (scrapeStatusElement) {
+						scrapeStatusElement.innerText = data.message || "Restoring old comments..."
+					}
+				})
+				.catch(() => {
+					const scrapeStatusElement = document.getElementById("scrape-status")
+					if (scrapeStatusElement) {
+						scrapeStatusElement.innerText = "Error restoring comments"
+					}
+				})
+		} else {
+			const scrapeStatusElement = document.getElementById("scrape-status")
+			if (scrapeStatusElement) {
+				scrapeStatusElement.innerText = "Sponsor Us: https://ko-fi.com/crunchyrollcomments"
+			}
+		}
 }
 
 // Inject comentario-comments and status elements
@@ -262,7 +267,7 @@ const checkAndUpdate = () => {
 // Entry Point
 document.addEventListener("readystatechange", async (event) => {
 	if (document.readyState === "complete") {
-		restoreComments()
+		await restoreComments()
 		await checkAndInject()
 		checkAndUpdate()
 	}
