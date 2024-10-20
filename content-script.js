@@ -35,36 +35,69 @@ const getBodyElementEventually = async function (selector) {
 	})
 }
 
-// Unified replacement function for spoilers and timestamps
-const replaceFeaturesWithHtml = function (commentHolder) {
-	const spoilerRegex = /\|\|.*?\|\|/g
-	const timestampRegex = /\b(?:([0-9]+):)?([0-5][0-9]):([0-5][0-9])\b/g
+const checkReleaseDate = async function () {
+	const d_day = new Date("July 8, 2024")
+	const releaseDateElement = await getBodyElementEventually(".release-date")
+	const releaseDateText = releaseDateElement?.innerText || ""
 
-	for (const comment of commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p")) {
-		// Skip if both spoilers and timestamps have already been processed
-		if (
-			comment.querySelector("span.crunchy-comments-spoiler-block") !== null &&
-			comment.querySelector("span.crunchy-comments-timestamp-block") !== null
-		) {
-			continue
+	// Regular expression to extract the date (e.g., "Oct 12, 2024")
+	const dateRegex = /Released on (\w+ \d{1,2}, \d{4})/
+
+	const match = releaseDateText.match(dateRegex)
+	if (match) {
+		const releaseDateStr = match[1] // Extracted date string (e.g., "Oct 12, 2024")
+
+		// Convert the extracted date string into a Date object
+		const releaseDateObj = new Date(releaseDateStr)
+
+		console.log("Release Date Object:", releaseDateObj)
+
+		if (releaseDateObj > d_day) {
+			console.log("New episode, won't restore comments :(")
+			return false
+		} else {
+			return true
+		}
+	} else {
+		console.log("Date not found")
+		return true
+	}
+}
+
+const replaceTimestamps = function (commentHolder) {
+	const timestampRegex = /\b(?:([0-9]+):)?([0-5]?[0-9]):([0-5][0-9])\b/g
+
+	commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p").forEach((comment) => {
+		if (comment.querySelector("span.crunchy-comments-timestamp-block") !== null) {
+			return
 		}
 
-		let originalHTML = comment.innerHTML
-
-		// Replace Spoilers
-		originalHTML = originalHTML.replaceAll(
-			spoilerRegex,
-			(match) => `<span class="crunchy-comments-spoiler-block">${match.slice(2, -2).trim()}</span>`
-		)
-
 		// Replace Timestamps
-		originalHTML = originalHTML.replaceAll(
+		comment.innerHTML = comment.innerHTML.replaceAll(
 			timestampRegex,
 			(match) => `<span class="crunchy-comments-timestamp-block">${match.trim()}</span>`
 		)
+	})
+}
 
-		comment.innerHTML = originalHTML
+const replaceSpoilers = function (commentHolder) {
+	const spoilerRegex = /\|\|.*?\|\|/g
 
+	commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p").forEach((comment) => {
+		if (comment.querySelector("span.crunchy-comments-spoiler-block") !== null) {
+			return
+		}
+
+		// Replace Spoilers
+		comment.innerHTML = comment.innerHTML.replaceAll(
+			spoilerRegex,
+			(match) => `<span class="crunchy-comments-spoiler-block">${match.slice(2, -2).trim()}</span>`
+		)
+	})
+}
+
+const addEventListenersForFeatures = function (commentHolder) {
+	commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p").forEach((comment) => {
 		// Add Event Listeners for Spoilers
 		comment.querySelectorAll("span.crunchy-comments-spoiler-block").forEach((spoiler) => {
 			spoiler.addEventListener("click", () => {
@@ -75,9 +108,8 @@ const replaceFeaturesWithHtml = function (commentHolder) {
 		// Add Event Listeners for Timestamps
 		comment.querySelectorAll("span.crunchy-comments-timestamp-block").forEach((timestamp) => {
 			timestamp.addEventListener("click", (e) => {
-				const regex = /\b(?:(?<h>[0-9]+):)?(?<m>[0-5][0-9]):(?<s>[0-5][0-9])\b/
+				const regex = /\b(?:(?<h>[0-9]+):)?(?<m>[0-5]?[0-9]):(?<s>[0-5][0-9])\b/
 				const tsGroups = e.target.innerText.trim().match(regex)?.groups
-
 				if (!tsGroups) return
 
 				let [hours, minutes, seconds] = [tsGroups.h || 0, tsGroups.m, tsGroups.s].map((x) => parseInt(x))
@@ -110,7 +142,14 @@ const replaceFeaturesWithHtml = function (commentHolder) {
 				}
 			})
 		})
-	}
+	})
+}
+
+// Unified replacement function for spoilers and timestamps
+const replaceFeaturesWithHtml = function (commentHolder) {
+	replaceTimestamps(commentHolder)
+	replaceSpoilers(commentHolder)
+	addEventListenersForFeatures(commentHolder)
 }
 
 let commentObserver = null
@@ -147,6 +186,7 @@ const restoreComments = () => {
 	const currentUrl = document.location.href
 
 	if (currentUrl.includes("watch") || currentUrl.includes("series"))
+		// if (checkReleaseDate()) {
 		fetch("https://crunchy.404420.xyz/restore?url=" + currentUrl)
 			.then((response) => response.json())
 			.then((data) => {
@@ -161,6 +201,7 @@ const restoreComments = () => {
 					scrapeStatusElement.innerText = "Error restoring comments"
 				}
 			})
+	// }
 }
 
 // Inject comentario-comments and status elements
