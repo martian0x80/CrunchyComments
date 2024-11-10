@@ -2,3 +2,6 @@
 
 # no need to share the IDE configuration files
 .idea
+
+**/node_modules
+**/.next

@@ -181,13 +181,35 @@ const reattachCommentObserver = async () => {
 	})
 }
 
+// Show server status
+const showServerStatus = async () => {
+	const currentUrl = document.location.href
+
+	if (currentUrl.includes("watch") || currentUrl.includes("series")) {
+		fetch("https://appstatus.crunchycomments.com/")
+			.then((response) => response.json())
+			.then((data) => {
+				const serverStatusElement = document.getElementById("app-status")
+				if (serverStatusElement) {
+					serverStatusElement.innerText = data.message || "Checking server status..."
+				}
+			})
+			.catch(() => {
+				const serverStatusElement = document.getElementById("app-status")
+				if (serverStatusElement) {
+					serverStatusElement.innerText = "Error checking server status"
+				}
+			})
+	}
+}
+
 // Restore comments based on the current URL
 const restoreComments = async () => {
 	const currentUrl = document.location.href
 
 	if (currentUrl.includes("watch") || currentUrl.includes("series"))
 		if (await checkReleaseDate()) {
-			fetch("https://crunchy.404420.xyz/restore?url=" + currentUrl)
+			fetch("https://restore.crunchycomments.com/restore?url=" + currentUrl)
 				.then((response) => response.json())
 				.then((data) => {
 					const scrapeStatusElement = document.getElementById("scrape-status")
@@ -220,6 +242,13 @@ const checkAndInject = async () => {
 			oldscrapeStatusElement.remove()
 		}
 
+		let statusElement = document.createElement("p")
+		statusElement.id = "app-status"
+		statusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
+		statusElement.innerText = "Checking Status..."
+		statusElement.style =
+			"display: flex; justify-content: center; z-index: 999; max-width: fit-content; margin: auto; padding: 0 0 15px;"
+
 		let scrapeStatusElement = document.createElement("p")
 		scrapeStatusElement.id = "scrape-status"
 		scrapeStatusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
@@ -229,9 +258,11 @@ const checkAndInject = async () => {
 
 		let comentarioElement = document.createElement("comentario-comments")
 		comentarioElement.setAttribute("max-level", "5")
+		comentarioElement.setAttribute("lang", "en")
 		// It seems "page-id" does not have any effect, so changes are moved to comentario.js
 		targetElement.insertAdjacentElement("afterend", comentarioElement)
 		targetElement.insertAdjacentElement("afterend", scrapeStatusElement)
+		targetElement.insertAdjacentElement("afterend", statusElement)
 
 		await reattachCommentObserver()
 	} else {
@@ -267,7 +298,8 @@ const checkAndUpdate = () => {
 // Entry Point
 document.addEventListener("readystatechange", async (event) => {
 	if (document.readyState === "complete") {
-		await restoreComments()
+		restoreComments().catch((e) => console.error(e))
+		showServerStatus().catch((e) => console.error(e))
 		await checkAndInject()
 		checkAndUpdate()
 	}
