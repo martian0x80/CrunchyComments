@@ -237,9 +237,11 @@ const checkAndInject = async () => {
 	if (targetElement) {
 		let oldElement = document.querySelector("comentario-comments")
 		let oldscrapeStatusElement = document.querySelector("#scrape-status")
+		let oldStatusElement = document.querySelector("#app-status")
 		if (oldElement) {
 			oldElement.remove()
 			oldscrapeStatusElement.remove()
+			oldStatusElement.remove()
 		}
 
 		let statusElement = document.createElement("p")
