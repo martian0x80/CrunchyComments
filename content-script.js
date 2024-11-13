@@ -64,6 +64,81 @@ const checkReleaseDate = async function () {
 	}
 }
 
+const spoilerButtonIcon = `
+    <svg class="comentario-icon" fill="currentColor" viewBox="0 0 16 16">
+        <path d="M 8,4.5 C 4.1323173,4.5160651 1,8 1,8 1,8 3.9636332,11.508033 8,11.5 12.036367,11.492 14.975902,8 15,8 15.0241,8 11.867683,4.4839347 8,4.5 Z m 0.078125,1 A 2.468644,2.5309772 45.000129 0 1 10.498047,8.015625 2.468644,2.5309772 45.000129 0 1 7.921875,10.5 2.468644,2.5309772 45.000129 0 1 5.5019531,7.984375 2.468644,2.5309772 45.000129 0 1 8.078125,5.5 Z M 8,6.5996094 A 1.3999999,1.4 0 0 0 6.5996094,8 1.3999999,1.4 0 0 0 8,9.4003906 1.3999999,1.4 0 0 0 9.4003906,8 1.3999999,1.4 0 0 0 8,6.5996094 Z" /></path>
+    </svg>`  // Created by PondusDev
+
+const spoilerDelimiterLength = 2  // If we can get this automatically, we can remove this constant
+// Inject features into a comment editor
+function onEditorOpen(comentarioEditor) {
+	// Add Spoiler Button
+	const spoilerButton = document.createElement("button")
+	spoilerButton.classList.add("comentario-btn", "comentario-btn-tool")
+	spoilerButton.type = "button"
+	spoilerButton.title = "Spoiler"
+	spoilerButton.tabIndex = -1
+	spoilerButton.innerHTML = spoilerButtonIcon
+	spoilerButton.onclick = () => {
+		const textArea = comentarioEditor.querySelector("textarea")
+		let selectionStart = textArea.selectionStart
+		let selectionEnd = textArea.selectionEnd
+
+		const preSelection = textArea.value.substring(0, textArea.selectionStart)
+		let selection = textArea.value.substring(textArea.selectionStart, textArea.selectionEnd)
+		const postSelection = textArea.value.substring(textArea.selectionEnd)
+
+		if (selection === "") {
+			selection = "text"
+			// Set the cursor to select the template text
+			selectionStart = selectionStart + spoilerDelimiterLength
+			selectionEnd = selectionEnd + spoilerDelimiterLength + selection.length
+		} else {
+			// Set the cursor after the spoiler
+			selectionStart = selectionEnd + 2*spoilerDelimiterLength
+			selectionEnd = selectionEnd + 2*spoilerDelimiterLength
+		}
+
+		textArea.value = `${preSelection}||${selection}||${postSelection}`
+		textArea.focus()
+		textArea.setSelectionRange(selectionStart, selectionEnd)
+	}
+	const toolbarSection = comentarioEditor.querySelector(".comentario-toolbar-section:first-child")
+	toolbarSection.appendChild(spoilerButton)
+}
+
+let editorObserver = null
+// Reattach the MutationObserver to detect comment editors
+const reattachEditorObserver = async (comentarioComments) => {
+	const onMutation = (mutationsList, observer) => {
+		observer.disconnect()
+
+		const addedNodes = mutationsList.flatMap((mutation) => Array.from(mutation.addedNodes))
+		const newEditors = addedNodes.filter((node) => node.classList && node.classList.contains("comentario-comment-editor"))
+		for (const editor of newEditors) {
+			onEditorOpen(editor)
+		}
+
+		if (editorObserver === observer) {
+			observer.observe(comentarioComments, {
+				subtree: true,
+				childList: true
+			})
+		}
+	}
+
+	if (editorObserver !== null) editorObserver.disconnect()
+	editorObserver = new MutationObserver(onMutation)
+	const editors = comentarioComments.querySelectorAll(".comentario-comment-editor")
+	for (const editor of editors) {
+		onEditorOpen(editor)
+	}
+	editorObserver.observe(comentarioComments, {
+		subtree: true,
+		childList: true
+	})
+}
+
 const replaceTimestamps = function (commentHolder) {
 	const timestampRegex = /\b(?:([0-9]+):)?([0-5]?[0-9]):([0-5][0-9])\b/g
 
@@ -265,6 +340,7 @@ const checkAndInject = async () => {
 		targetElement.insertAdjacentElement("afterend", statusElement)
 
 		await reattachCommentObserver()
+		await reattachEditorObserver(comentarioElement)
 	} else {
 		requestAnimationFrame(checkAndInject)
 	}
