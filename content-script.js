@@ -67,9 +67,9 @@ const checkReleaseDate = async function () {
 const spoilerButtonIcon = `
     <svg class="comentario-icon" fill="currentColor" viewBox="0 0 16 16">
         <path d="M 8,4.5 C 4.1323173,4.5160651 1,8 1,8 1,8 3.9636332,11.508033 8,11.5 12.036367,11.492 14.975902,8 15,8 15.0241,8 11.867683,4.4839347 8,4.5 Z m 0.078125,1 A 2.468644,2.5309772 45.000129 0 1 10.498047,8.015625 2.468644,2.5309772 45.000129 0 1 7.921875,10.5 2.468644,2.5309772 45.000129 0 1 5.5019531,7.984375 2.468644,2.5309772 45.000129 0 1 8.078125,5.5 Z M 8,6.5996094 A 1.3999999,1.4 0 0 0 6.5996094,8 1.3999999,1.4 0 0 0 8,9.4003906 1.3999999,1.4 0 0 0 9.4003906,8 1.3999999,1.4 0 0 0 8,6.5996094 Z" /></path>
-    </svg>`  // Created by PondusDev
+    </svg>` // Created by PondusDev
 
-const spoilerDelimiterLength = 2  // If we can get this automatically, we can remove this constant
+const spoilerDelimiterLength = 2 // If we can get this automatically, we can remove this constant
 // Inject features into a comment editor
 function onEditorOpen(comentarioEditor) {
 	// Add Spoiler Button
@@ -95,8 +95,8 @@ function onEditorOpen(comentarioEditor) {
 			selectionEnd = selectionEnd + spoilerDelimiterLength + selection.length
 		} else {
 			// Set the cursor after the spoiler
-			selectionStart = selectionEnd + 2*spoilerDelimiterLength
-			selectionEnd = selectionEnd + 2*spoilerDelimiterLength
+			selectionStart = selectionEnd + 2 * spoilerDelimiterLength
+			selectionEnd = selectionEnd + 2 * spoilerDelimiterLength
 		}
 
 		textArea.value = `${preSelection}||${selection}||${postSelection}`
@@ -114,7 +114,9 @@ const reattachEditorObserver = async (comentarioComments) => {
 		observer.disconnect()
 
 		const addedNodes = mutationsList.flatMap((mutation) => Array.from(mutation.addedNodes))
-		const newEditors = addedNodes.filter((node) => node.classList && node.classList.contains("comentario-comment-editor"))
+		const newEditors = addedNodes.filter(
+			(node) => node.classList && node.classList.contains("comentario-comment-editor")
+		)
 		for (const editor of newEditors) {
 			onEditorOpen(editor)
 		}
@@ -122,7 +124,7 @@ const reattachEditorObserver = async (comentarioComments) => {
 		if (editorObserver === observer) {
 			observer.observe(comentarioComments, {
 				subtree: true,
-				childList: true
+				childList: true,
 			})
 		}
 	}
@@ -135,7 +137,7 @@ const reattachEditorObserver = async (comentarioComments) => {
 	}
 	editorObserver.observe(comentarioComments, {
 		subtree: true,
-		childList: true
+		childList: true,
 	})
 }
 
@@ -341,6 +343,9 @@ const checkAndInject = async () => {
 
 		await reattachCommentObserver()
 		await reattachEditorObserver(comentarioElement)
+
+		// Fetch server status immediately after injection
+		showServerStatus().catch((e) => console.error(e))
 	} else {
 		requestAnimationFrame(checkAndInject)
 	}
@@ -380,6 +385,6 @@ document.addEventListener("readystatechange", async (event) => {
 		await checkAndInject()
 		checkAndUpdate()
 
-		setInterval(showServerStatus, 180000)
+		setInterval(showServerStatus, 300000)
 	}
 })
