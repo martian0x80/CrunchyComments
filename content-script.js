@@ -185,22 +185,20 @@ const reattachCommentObserver = async () => {
 const showServerStatus = async () => {
 	const currentUrl = document.location.href
 
-	if (currentUrl.includes("watch") || currentUrl.includes("series")) {
-		fetch("https://appstatus.crunchycomments.com/")
-			.then((response) => response.json())
-			.then((data) => {
-				const serverStatusElement = document.getElementById("app-status")
-				if (serverStatusElement) {
-					serverStatusElement.innerText = data.message || "Checking server status..."
-				}
-			})
-			.catch(() => {
-				const serverStatusElement = document.getElementById("app-status")
-				if (serverStatusElement) {
-					serverStatusElement.innerText = "Error checking server status"
-				}
-			})
-	}
+	fetch("https://appstatus.crunchycomments.com/")
+		.then((response) => response.json())
+		.then((data) => {
+			const serverStatusElement = document.getElementById("app-status")
+			if (serverStatusElement) {
+				serverStatusElement.innerText = data.message || "Checking server status..."
+			}
+		})
+		.catch(() => {
+			const serverStatusElement = document.getElementById("app-status")
+			if (serverStatusElement) {
+				serverStatusElement.innerText = "Error checking server status"
+			}
+		})
 }
 
 // Restore comments based on the current URL
@@ -237,9 +235,11 @@ const checkAndInject = async () => {
 	if (targetElement) {
 		let oldElement = document.querySelector("comentario-comments")
 		let oldscrapeStatusElement = document.querySelector("#scrape-status")
+		let oldStatusElement = document.querySelector("#app-status")
 		if (oldElement) {
 			oldElement.remove()
 			oldscrapeStatusElement.remove()
+			oldStatusElement.remove()
 		}
 
 		let statusElement = document.createElement("p")
@@ -298,9 +298,12 @@ const checkAndUpdate = () => {
 // Entry Point
 document.addEventListener("readystatechange", async (event) => {
 	if (document.readyState === "complete") {
-		restoreComments().catch((e) => console.error(e))
-		showServerStatus().catch((e) => console.error(e))
+		// restoreComments().catch((e) => console.error(e))
+		// showServerStatus().catch((e) => console.error(e))
+		Promise.all([restoreComments(), showServerStatus()]).catch((e) => console.error(e))
 		await checkAndInject()
 		checkAndUpdate()
+
+		setInterval(showServerStatus, 180000)
 	}
 })
