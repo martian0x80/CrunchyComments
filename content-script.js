@@ -301,7 +301,7 @@ const restoreComments = async () => {
 		} else {
 			const scrapeStatusElement = document.getElementById("scrape-status")
 			if (scrapeStatusElement) {
-				scrapeStatusElement.innerText = "Sponsor Us: https://ko-fi.com/crunchyrollcomments"
+				scrapeStatusElement.innerText = "Support Us: https://ko-fi.com/crunchycomments"
 			}
 		}
 }

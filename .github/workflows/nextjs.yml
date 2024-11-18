@@ -1,7 +1,5 @@
-# Sample workflow for building and deploying a Next.js site to GitHub Pages
-#
-# To get started with Next.js see: https://nextjs.org/docs/getting-started
-#
+# Deprecated now, Cloudflare Pages FTW
+
 name: Deploy Next.js site to Pages
 
 on:
@@ -9,7 +7,7 @@ on:
   push:
     branches: ["master"]
     paths:
-      - 'docs/**'
+      - ["docs/**"]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

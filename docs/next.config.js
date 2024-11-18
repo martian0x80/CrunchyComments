@@ -4,7 +4,7 @@ const nextConfig = {
   distDir: './out',
   images: {
     unoptimized: true,
-},
+	},
 }
 
 export default nextConfig
