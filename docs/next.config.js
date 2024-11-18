@@ -1,12 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-	webpack: (config, { dev }) => {
-		// Disable cache in development
-		if (dev) {
-			config.cache = false
-		}
-		return config
-	},
+	output: 'export',
+  distDir: './out',
+  images: {
+    unoptimized: true,
+},
 }
 
 export default nextConfig
