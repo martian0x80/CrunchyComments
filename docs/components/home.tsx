@@ -19,7 +19,7 @@ import { ComentarioComments } from "./comentario"
 import { FloatingDockB } from "./dock"
 import Link from "next/link"
 import Image from "next/image"
-import hime from "@/assets/hime.png"
+import hime from "@/public/hime.png"
 
 interface GlowingOrbProps {
 	x: number
