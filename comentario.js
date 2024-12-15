@@ -3696,8 +3696,8 @@
   class Vt extends HTMLElement {
     constructor() {
       super(...arguments),
-        (this.origin = "https://comentario.rmrf.online"),
-        (this.cdn = "https://comentario.rmrf.online"),
+        (this.origin = "https://chat.crunchycomments.com"),
+        (this.cdn = "https://chat.crunchycomments.com"),
         (this.apiService = new h(e.joinUrl(this.origin, "api"))),
         (this.i18n = new Rt(this.apiService)),
         (this.location = parent.Cypress ? window.location : parent.location),

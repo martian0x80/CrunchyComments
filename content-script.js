@@ -177,13 +177,16 @@ const addEventListenersForFeatures = function (commentHolder) {
 	commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p").forEach((comment) => {
 		// Add Event Listeners for Spoilers
 		comment.querySelectorAll("span.crunchy-comments-spoiler-block").forEach((spoiler) => {
+			if (spoiler.dataset.hasEventListener === "true") return
 			spoiler.addEventListener("click", () => {
 				spoiler.classList.toggle("revealed")
 			})
+			spoiler.dataset.hasEventListener = "true"
 		})
 
 		// Add Event Listeners for Timestamps
 		comment.querySelectorAll("span.crunchy-comments-timestamp-block").forEach((timestamp) => {
+			if (timestamp.dataset.hasEventListener === "true") return
 			timestamp.addEventListener("click", (e) => {
 				const regex = /\b(?:(?<h>[0-9]+):)?(?<m>[0-5]?[0-9]):(?<s>[0-5][0-9])\b/
 				const tsGroups = e.target.innerText.trim().match(regex)?.groups
@@ -218,6 +221,7 @@ const addEventListenersForFeatures = function (commentHolder) {
 					)
 				}
 			})
+			timestamp.dataset.hasEventListener = "true"
 		})
 	})
 }
@@ -324,14 +328,14 @@ const checkAndInject = async () => {
 		statusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
 		statusElement.innerText = "Checking Status..."
 		statusElement.style =
-			"display: flex; justify-content: center; z-index: 999; max-width: fit-content; margin: auto; padding: 0 0 15px;"
+			"display: flex; justify-content: center; z-index: auto; max-width: fit-content; margin: auto; padding: 0 0 15px;"
 
 		let scrapeStatusElement = document.createElement("p")
 		scrapeStatusElement.id = "scrape-status"
 		scrapeStatusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
 		scrapeStatusElement.innerText = "Restoring archived comments..."
 		scrapeStatusElement.style =
-			"display: flex; justify-content: center; z-index: 999; max-width: fit-content; margin: 0 auto;"
+			"display: flex; justify-content: center; z-index: auto; max-width: fit-content; margin: 0 auto;"
 
 		let comentarioElement = document.createElement("comentario-comments")
 		comentarioElement.setAttribute("max-level", "5")
