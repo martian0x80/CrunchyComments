@@ -335,7 +335,7 @@ const checkAndInject = async () => {
 		scrapeStatusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
 		scrapeStatusElement.innerText = "Restoring archived comments..."
 		scrapeStatusElement.style =
-			"display: flex; justify-content: center; z-index: auto; max-width: fit-content; margin: 0 auto;"
+			"display: flex; justify-content: center; z-index: 1; max-width: fit-content; margin: 0 auto;"
 
 		let comentarioElement = document.createElement("comentario-comments")
 		comentarioElement.setAttribute("max-level", "5")
