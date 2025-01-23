@@ -312,7 +312,10 @@ const restoreComments = async () => {
 
 // Inject comentario-comments and status elements
 const checkAndInject = async () => {
-	const targetElement = document.querySelector(".app-body-wrapper")
+	const parentElement = document.querySelector("[class*='app-layout__content'] [class*='page-wrapper--']")
+	// const targetElement =
+	// parentElement?.querySelector("[class*='content-wrapper']") || parentElement?.querySelector(":nth-child(1)")
+	const targetElement = parentElement?.querySelector(":nth-child(1)")
 	if (targetElement) {
 		let oldElement = document.querySelector("comentario-comments")
 		let oldscrapeStatusElement = document.querySelector("#scrape-status")
@@ -328,7 +331,7 @@ const checkAndInject = async () => {
 		statusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
 		statusElement.innerText = "Checking Status..."
 		statusElement.style =
-			"display: flex; justify-content: center; z-index: auto; max-width: fit-content; margin: auto; padding: 0 0 15px;"
+			"display: flex; justify-content: center; z-index: auto; max-width: fit-content; margin: auto; padding: 20px 0 15px;"
 
 		let scrapeStatusElement = document.createElement("p")
 		scrapeStatusElement.id = "scrape-status"
