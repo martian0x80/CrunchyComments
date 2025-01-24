@@ -312,50 +312,97 @@ const restoreComments = async () => {
 
 // Inject comentario-comments and status elements
 const checkAndInject = async () => {
-	const parentElement = document.querySelector("[class*='app-layout__content'] [class*='page-wrapper--']")
-	// const targetElement =
-	// parentElement?.querySelector("[class*='content-wrapper']") || parentElement?.querySelector(":nth-child(1)")
-	const targetElement = parentElement?.querySelector(":nth-child(1)")
-	if (targetElement) {
-		let oldElement = document.querySelector("comentario-comments")
-		let oldscrapeStatusElement = document.querySelector("#scrape-status")
-		let oldStatusElement = document.querySelector("#app-status")
-		if (oldElement) {
-			oldElement.remove()
-			oldscrapeStatusElement.remove()
-			oldStatusElement.remove()
+	return new Promise((resolve) => {
+		const observer = new MutationObserver((mutations, obs) => {
+			const pageWrapper = document.querySelector("[class*='page-wrapper--']")
+			const comentarioElement = document.querySelector("comentario-comments")
+
+			if (pageWrapper?.children?.length) {
+				// If our elements were removed, re-inject them
+				if (!comentarioElement) {
+					const targetElement = pageWrapper.children[pageWrapper.children.length - 1]
+					if (targetElement) {
+						injectElements(targetElement)
+					}
+				}
+				// If elements exist but are not in the correct position, move them
+				else {
+					const lastElement = pageWrapper.children[pageWrapper.children.length - 1]
+					if (lastElement !== comentarioElement) {
+						const statusElement = document.getElementById("app-status")
+						const scrapeStatusElement = document.getElementById("scrape-status")
+
+						if (statusElement) pageWrapper.appendChild(statusElement)
+						if (scrapeStatusElement) pageWrapper.appendChild(scrapeStatusElement)
+						pageWrapper.appendChild(comentarioElement)
+					}
+				}
+			}
+		})
+
+		observer.observe(document.body, {
+			childList: true,
+			subtree: true,
+			attributes: true,
+		})
+
+		// Initial injection
+		const pageWrapper = document.querySelector("[class*='page-wrapper--']")
+		if (pageWrapper?.children?.length) {
+			const targetElement = pageWrapper.children[pageWrapper.children.length - 1]
+			if (targetElement && !document.querySelector("comentario-comments")) {
+				injectElements(targetElement)
+			}
 		}
 
-		let statusElement = document.createElement("p")
-		statusElement.id = "app-status"
-		statusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
-		statusElement.innerText = "Checking Status..."
-		statusElement.style =
-			"display: flex; justify-content: center; z-index: auto; max-width: fit-content; margin: auto; padding: 20px 0 15px;"
+		// Don't disconnect the observer after initial injection
+		// Let it keep running to handle re-renders
+		// observer.disconnect()
 
-		let scrapeStatusElement = document.createElement("p")
-		scrapeStatusElement.id = "scrape-status"
-		scrapeStatusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
-		scrapeStatusElement.innerText = "Restoring archived comments..."
-		scrapeStatusElement.style =
-			"display: flex; justify-content: center; z-index: 1; max-width: fit-content; margin: 0 auto;"
+		setTimeout(() => {
+			resolve()
+		}, 5000)
+	})
+}
 
-		let comentarioElement = document.createElement("comentario-comments")
-		comentarioElement.setAttribute("max-level", "5")
-		comentarioElement.setAttribute("lang", "en")
-		// It seems "page-id" does not have any effect, so changes are moved to comentario.js
-		targetElement.insertAdjacentElement("afterend", comentarioElement)
-		targetElement.insertAdjacentElement("afterend", scrapeStatusElement)
-		targetElement.insertAdjacentElement("afterend", statusElement)
-
-		await reattachCommentObserver()
-		await reattachEditorObserver(comentarioElement)
-
-		// Fetch server status immediately after injection
-		showServerStatus().catch((e) => console.error(e))
-	} else {
-		requestAnimationFrame(checkAndInject)
+const injectElements = async (targetElement) => {
+	if (!targetElement) return
+	let oldElement = document.querySelector("comentario-comments")
+	let oldscrapeStatusElement = document.querySelector("#scrape-status")
+	let oldStatusElement = document.querySelector("#app-status")
+	if (oldElement) {
+		oldElement.remove()
+		oldscrapeStatusElement.remove()
+		oldStatusElement.remove()
 	}
+
+	let statusElement = document.createElement("p")
+	statusElement.id = "app-status"
+	statusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
+	statusElement.innerText = "Checking Status..."
+	statusElement.style =
+		"display: flex; justify-content: center; z-index: auto; max-width: fit-content; margin: auto; padding: 5px 0 15px;"
+
+	let scrapeStatusElement = document.createElement("p")
+	scrapeStatusElement.id = "scrape-status"
+	scrapeStatusElement.className = "text--gq6o- text--is-l--iccTo expandable-section__text---00oG"
+	scrapeStatusElement.innerText = "Restoring archived comments..."
+	scrapeStatusElement.style =
+		"display: flex; justify-content: center; z-index: 1; max-width: fit-content; margin: 0 auto;"
+
+	let comentarioElement = document.createElement("comentario-comments")
+	comentarioElement.setAttribute("max-level", "5")
+	comentarioElement.setAttribute("lang", "en")
+	// It seems "page-id" does not have any effect, so changes are moved to comentario.js
+	targetElement.insertAdjacentElement("afterend", comentarioElement)
+	targetElement.insertAdjacentElement("afterend", scrapeStatusElement)
+	targetElement.insertAdjacentElement("afterend", statusElement)
+
+	await reattachCommentObserver()
+	await reattachEditorObserver(comentarioElement)
+
+	// Fetch server status immediately after injection
+	showServerStatus().catch((e) => console.error(e))
 }
 
 // Monitor URL changes and re-inject scripts as necessary
