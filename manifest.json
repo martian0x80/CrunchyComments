@@ -1,7 +1,7 @@
 {
 	"name": "Crunchyroll Comments",
 	"description": "Crunchyroll Comments is a browser extension that brings back the Crunchyroll comments section.",
-	"version": "1.1.3",
+	"version": "1.1.4",
 	"manifest_version": 3,
 	"content_scripts": [
 		{
@@ -14,7 +14,7 @@
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["comentario.js", "timestampRender.js"],
+			"resources": ["comentario.js", "timestampRender.js", "patch.js"],
 			"matches": ["<all_urls>"]
 		}
 	],

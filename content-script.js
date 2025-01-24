@@ -8,6 +8,11 @@ const script = document.createElement("script")
 script.src = chrome.runtime.getURL("comentario.js")
 script.defer = true
 
+const patchScript = document.createElement("script")
+patchScript.src = chrome.runtime.getURL("patch.js")
+patchScript.onload = () => patchScript.remove()
+document.documentElement.appendChild(patchScript)
+
 const appendScript = () => {
 	if (document.head) {
 		document.head.appendChild(script)
@@ -312,68 +317,36 @@ const restoreComments = async () => {
 
 // Inject comentario-comments and status elements
 const checkAndInject = async () => {
-	return new Promise((resolve) => {
-		const observer = new MutationObserver((mutations, obs) => {
-			const pageWrapper = document.querySelector("[class*='page-wrapper--']")
-			const comentarioElement = document.querySelector("comentario-comments")
+	let pageWrapper = await getBodyElementEventually("[class*='page-wrapper--']")
+	if (!pageWrapper) {
+		console.log("No pageWrapper found. Skipping injection for now.")
+		return
+	}
 
-			if (pageWrapper?.children?.length) {
-				// If our elements were removed, re-inject them
-				if (!comentarioElement) {
-					const targetElement = pageWrapper.children[pageWrapper.children.length - 1]
-					if (targetElement) {
-						injectElements(targetElement)
-					}
-				}
-				// If elements exist but are not in the correct position, move them
-				else {
-					const lastElement = pageWrapper.children[pageWrapper.children.length - 1]
-					if (lastElement !== comentarioElement) {
-						const statusElement = document.getElementById("app-status")
-						const scrapeStatusElement = document.getElementById("scrape-status")
+	await sleep(500)
 
-						if (statusElement) pageWrapper.appendChild(statusElement)
-						if (scrapeStatusElement) pageWrapper.appendChild(scrapeStatusElement)
-						pageWrapper.appendChild(comentarioElement)
-					}
-				}
-			}
-		})
+	const existingComentario = document.querySelector("comentario-comments")
+	if (existingComentario) existingComentario.remove()
+	const oldStatus = document.getElementById("app-status")
+	if (oldStatus) oldStatus.remove()
+	const oldScrape = document.getElementById("scrape-status")
+	if (oldScrape) oldScrape.remove()
 
-		observer.observe(document.body, {
-			childList: true,
-			subtree: true,
-			attributes: true,
-		})
-
-		// Initial injection
-		const pageWrapper = document.querySelector("[class*='page-wrapper--']")
-		if (pageWrapper?.children?.length) {
-			const targetElement = pageWrapper.children[pageWrapper.children.length - 1]
-			if (targetElement && !document.querySelector("comentario-comments")) {
-				injectElements(targetElement)
-			}
-		}
-
-		// Don't disconnect the observer after initial injection
-		// Let it keep running to handle re-renders
-		// observer.disconnect()
-
-		setTimeout(() => {
-			resolve()
-		}, 5000)
-	})
+	console.log("Re-injecting <comentario-comments> on route change")
+	await injectElements()
 }
 
-const injectElements = async (targetElement) => {
-	if (!targetElement) return
+const injectElements = async () => {
+	const pageWrapper = document.querySelector("[class*='page-wrapper--']")
+	if (!pageWrapper) return
+	const targetElement = pageWrapper.children[pageWrapper.children.length - 1] || pageWrapper
 	let oldElement = document.querySelector("comentario-comments")
 	let oldscrapeStatusElement = document.querySelector("#scrape-status")
 	let oldStatusElement = document.querySelector("#app-status")
 	if (oldElement) {
 		oldElement.remove()
-		oldscrapeStatusElement.remove()
-		oldStatusElement.remove()
+		oldscrapeStatusElement?.remove()
+		oldStatusElement?.remove()
 	}
 
 	let statusElement = document.createElement("p")
@@ -412,29 +385,38 @@ const checkAndUpdate = () => {
 		await checkAndInject()
 	})
 
-	const bodyList = document.querySelector("body")
+	// const bodyList = document.querySelector("body")
 
-	const observer = new MutationObserver(function (mutations) {
-		mutations.forEach(async function (mutation) {
-			if (oldHref !== document.location.href) {
-				oldHref = document.location.href
-				restoreComments()
-				await checkAndInject()
-			}
-		})
-	})
-	const config = {
-		childList: true,
-		subtree: true,
-	}
-	observer.observe(bodyList, config)
+	// const observer = new MutationObserver(function (mutations) {
+	// 	mutations.forEach(async function (mutation) {
+	// 		if (oldHref !== document.location.href) {
+	// 			oldHref = document.location.href
+	// 			restoreComments()
+	// 			await checkAndInject()
+	// 		}
+	// 	})
+	// })
+	// const config = {
+	// 	childList: true,
+	// 	subtree: true,
+	// }
+	// observer.observe(bodyList, config)
 }
+
+window.addEventListener("locationchange", async () => {
+	if (oldHref !== location.href) {
+		oldHref = location.href
+		requestAnimationFrame(async () => {
+			await sleep(500)
+			restoreComments()
+			await checkAndInject()
+		})
+	}
+})
 
 // Entry Point
 document.addEventListener("readystatechange", async (event) => {
 	if (document.readyState === "complete") {
-		// restoreComments().catch((e) => console.error(e))
-		// showServerStatus().catch((e) => console.error(e))
 		Promise.all([restoreComments(), showServerStatus()]).catch((e) => console.error(e))
 		await checkAndInject()
 		checkAndUpdate()
