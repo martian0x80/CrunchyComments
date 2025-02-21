@@ -178,55 +178,59 @@ const replaceSpoilers = function (commentHolder) {
 	})
 }
 
+// Need this function to be named so that addEventListener can recognize it
+function replaceTimestampsFunction(event) {
+	const regex = /\b(?:(?<h>[0-9]+):)?(?<m>[0-5]?[0-9]):(?<s>[0-5][0-9])\b/
+	const tsGroups = event.target.innerText.trim().match(regex)?.groups
+	if (!tsGroups) return
+
+	let [hours, minutes, seconds] = [tsGroups.h || 0, tsGroups.m, tsGroups.s].map((x) => parseInt(x))
+
+	seconds = (hours * 60 + minutes) * 60 + seconds
+
+	const el = document.querySelector("iframe.video-player") || document.getElementById("player0") || {}
+	if (el.scrollIntoView) {
+		el.scrollIntoView({
+			behavior: "smooth",
+			block: "end",
+			inline: "nearest",
+		})
+	}
+
+	const cssElement = document.getElementsByClassName("css-9pa8cd")[1]
+	if (cssElement && cssElement.click) {
+		cssElement.click()
+	}
+
+	const videoIframe = document.querySelector("iframe.video-player")
+	if (videoIframe && videoIframe.contentWindow) {
+		videoIframe.contentWindow.postMessage(
+			{
+				action: "renderTimestamp",
+				message: seconds,
+			},
+			"*"
+		)
+	}
+}
+
+// Need this function to be named so that addEventListener can recognize it
+function replaceSpoilersFunction(event) {
+	event.currentTarget.classList.toggle("revealed")
+}
+
 const addEventListenersForFeatures = function (commentHolder) {
 	commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p").forEach((comment) => {
 		// Add Event Listeners for Spoilers
 		comment.querySelectorAll("span.crunchy-comments-spoiler-block").forEach((spoiler) => {
-			if (spoiler.dataset.hasEventListener === "true") return
-			spoiler.addEventListener("click", () => {
-				spoiler.classList.toggle("revealed")
-			})
-			spoiler.dataset.hasEventListener = "true"
+			// named function to prevent event listener duplication
+			spoiler.addEventListener("click", replaceSpoilersFunction)
 		})
 
 		// Add Event Listeners for Timestamps
 		comment.querySelectorAll("span.crunchy-comments-timestamp-block").forEach((timestamp) => {
-			if (timestamp.dataset.hasEventListener === "true") return
-			timestamp.addEventListener("click", (e) => {
-				const regex = /\b(?:(?<h>[0-9]+):)?(?<m>[0-5]?[0-9]):(?<s>[0-5][0-9])\b/
-				const tsGroups = e.target.innerText.trim().match(regex)?.groups
-				if (!tsGroups) return
-
-				let [hours, minutes, seconds] = [tsGroups.h || 0, tsGroups.m, tsGroups.s].map((x) => parseInt(x))
-
-				seconds = (hours * 60 + minutes) * 60 + seconds
-
-				const el = document.querySelector("iframe.video-player") || document.getElementById("player0") || {}
-				if (el.scrollIntoView) {
-					el.scrollIntoView({
-						behavior: "smooth",
-						block: "end",
-						inline: "nearest",
-					})
-				}
-
-				const cssElement = document.getElementsByClassName("css-9pa8cd")[1]
-				if (cssElement && cssElement.click) {
-					cssElement.click()
-				}
-
-				const videoIframe = document.querySelector("iframe.video-player")
-				if (videoIframe && videoIframe.contentWindow) {
-					videoIframe.contentWindow.postMessage(
-						{
-							action: "renderTimestamp",
-							message: seconds,
-						},
-						"*"
-					)
-				}
-			})
-			timestamp.dataset.hasEventListener = "true"
+			// named function to prevent event listener duplication
+			timestamp.addEventListener("click", replaceTimestampsFunction)
 		})
 	})
 }
