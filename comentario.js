@@ -3736,10 +3736,20 @@
           "false" !== this.cssOverride)
         )
           try {
-            yield this.cssLoad(`${this.cdn}/comentario.css`),
-              this.cssOverride && (yield this.cssLoad(this.cssOverride));
+          	const existingCss = document.querySelector('link[href*="comentario-override.css"]');
+            if (existingCss) {
+              console.log("✅ Local CSS file successfully loaded");
+            } else {
+              console.log("❌ Local CSS file not loaded. Loading from CDN.");
+              yield this.cssLoad(`${this.cdn}/comentario.css`);
+            }
+
+            if (this.cssOverride) {
+              console.log("Loading additional CSS override:", this.cssOverride);
+              yield this.cssLoad(this.cssOverride);
+            }
           } catch (t) {
-            console.error(t);
+            console.error("Error loading CSS:", t);
           }
         this.root
           .inner("")

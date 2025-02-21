@@ -8,6 +8,13 @@ const script = document.createElement("script")
 script.src = chrome.runtime.getURL("comentario.js")
 script.defer = true
 
+// Inject comentario-override.css
+const link = document.createElement("link")
+link.rel = "stylesheet"
+link.type = "text/css"
+link.href = chrome.runtime.getURL("comentario-override.css")
+
+// Inject patch.js
 const patchScript = document.createElement("script")
 patchScript.src = chrome.runtime.getURL("patch.js")
 patchScript.onload = () => patchScript.remove()
@@ -16,6 +23,7 @@ document.documentElement.appendChild(patchScript)
 const appendScript = () => {
 	if (document.head) {
 		document.head.appendChild(script)
+		document.head.appendChild(link)
 	} else {
 		requestAnimationFrame(appendScript)
 	}
@@ -388,23 +396,6 @@ const checkAndUpdate = () => {
 		restoreComments()
 		await checkAndInject()
 	})
-
-	// const bodyList = document.querySelector("body")
-
-	// const observer = new MutationObserver(function (mutations) {
-	// 	mutations.forEach(async function (mutation) {
-	// 		if (oldHref !== document.location.href) {
-	// 			oldHref = document.location.href
-	// 			restoreComments()
-	// 			await checkAndInject()
-	// 		}
-	// 	})
-	// })
-	// const config = {
-	// 	childList: true,
-	// 	subtree: true,
-	// }
-	// observer.observe(bodyList, config)
 }
 
 window.addEventListener("locationchange", async () => {

@@ -14,7 +14,7 @@
 	],
 	"web_accessible_resources": [
 		{
-			"resources": ["comentario.js", "timestampRender.js", "patch.js"],
+			"resources": ["comentario.js", "timestampRender.js", "patch.js", "comentario-override.css"],
 			"matches": ["<all_urls>"]
 		}
 	],
