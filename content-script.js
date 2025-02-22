@@ -335,7 +335,7 @@ const checkAndInject = async () => {
 		return
 	}
 
-	await sleep(500)
+	await sleep(1000)
 
 	const existingComentario = document.querySelector("comentario-comments")
 	if (existingComentario) existingComentario.remove()
