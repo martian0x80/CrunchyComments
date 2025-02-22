@@ -75,6 +75,9 @@ const spoilerButtonIcon = `
     </svg>` // Created by PondusDev
 
 const spoilerDelimiterLength = 2 // If we can get this automatically, we can remove this constant
+
+const commentParagraphSelector = ".comentario-card .comentario-card-body > p, .comentario-comment-editor-preview > p"
+
 // Inject features into a comment editor
 function onEditorOpen(comentarioEditor) {
 	// Add Spoiler Button
@@ -146,10 +149,10 @@ const reattachEditorObserver = async (comentarioComments) => {
 	})
 }
 
-const replaceTimestamps = function (commentHolder) {
+const replaceTimestamps = function (mainComentarioArea) {
 	const timestampRegex = /\b(?:([0-9]+):)?([0-5]?[0-9]):([0-5][0-9])\b/g
 
-	commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p").forEach((comment) => {
+	mainComentarioArea.querySelectorAll(commentParagraphSelector).forEach((comment) => {
 		if (comment.querySelector("span.crunchy-comments-timestamp-block") !== null) {
 			return
 		}
@@ -162,10 +165,10 @@ const replaceTimestamps = function (commentHolder) {
 	})
 }
 
-const replaceSpoilers = function (commentHolder) {
+const replaceSpoilers = function (mainComentarioArea) {
 	const spoilerRegex = /\|\|.*?\|\|/g
 
-	commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p").forEach((comment) => {
+	mainComentarioArea.querySelectorAll(commentParagraphSelector).forEach((comment) => {
 		if (comment.querySelector("span.crunchy-comments-spoiler-block") !== null) {
 			return
 		}
@@ -219,8 +222,8 @@ function replaceSpoilersFunction(event) {
 	event.currentTarget.classList.toggle("revealed")
 }
 
-const addEventListenersForFeatures = function (commentHolder) {
-	commentHolder.querySelectorAll(".comentario-card .comentario-card-body > p").forEach((comment) => {
+const addEventListenersForFeatures = function (mainComentarioArea) {
+	mainComentarioArea.querySelectorAll(commentParagraphSelector).forEach((comment) => {
 		// Add Event Listeners for Spoilers
 		comment.querySelectorAll("span.crunchy-comments-spoiler-block").forEach((spoiler) => {
 			// named function to prevent event listener duplication
@@ -236,24 +239,24 @@ const addEventListenersForFeatures = function (commentHolder) {
 }
 
 // Unified replacement function for spoilers and timestamps
-const replaceFeaturesWithHtml = function (commentHolder) {
-	replaceTimestamps(commentHolder)
-	replaceSpoilers(commentHolder)
-	addEventListenersForFeatures(commentHolder)
+const replaceFeaturesWithHtml = function (mainComentarioArea) {
+	replaceTimestamps(mainComentarioArea)
+	replaceSpoilers(mainComentarioArea)
+	addEventListenersForFeatures(mainComentarioArea)
 }
 
 let commentObserver = null
 
 // Reattach the MutationObserver to monitor comment changes
 const reattachCommentObserver = async () => {
-	const commentHolder = await getBodyElementEventually("comentario-comments .comentario-comments")
+	const mainComentarioArea = await getBodyElementEventually("comentario-comments .comentario-main-area")
 	const onMutation = (mutationsList, observer) => {
 		observer.disconnect()
 
-		replaceFeaturesWithHtml(commentHolder)
+		replaceFeaturesWithHtml(mainComentarioArea)
 
 		if (commentObserver === observer) {
-			observer.observe(commentHolder, {
+			observer.observe(mainComentarioArea, {
 				subtree: true,
 				childList: true,
 				characterData: true,
@@ -263,8 +266,8 @@ const reattachCommentObserver = async () => {
 
 	if (commentObserver !== null) commentObserver.disconnect()
 	commentObserver = new MutationObserver(onMutation)
-	replaceFeaturesWithHtml(commentHolder) // Initial replacement
-	commentObserver.observe(commentHolder, {
+	replaceFeaturesWithHtml(mainComentarioArea) // Initial replacement
+	commentObserver.observe(mainComentarioArea, {
 		subtree: true,
 		childList: true,
 		characterData: true,
