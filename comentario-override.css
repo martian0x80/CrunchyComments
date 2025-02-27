@@ -1809,3 +1809,138 @@ comentario-comments[theme="dark"] {
     background-size: 50% !important;
     background-position: center !important;
 }
+.comentario-root .comentario-ph-button {
+    display: inline-block;
+    width: 75px;
+    height: 32px;
+    margin: 5px;
+}
+.comentario-root .comentario-ph-profile-bar {
+    height: 60px;
+    margin-top: -16px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    text-align: right;
+}
+.comentario-root .comentario-ph-add-comment-host {
+    height: 130px;
+    border-radius: 3px;
+    margin-bottom: 30px;
+}
+.comentario-root .comentario-ph-comment-card {
+    height: 120px;
+    margin-top: 16px;
+    padding-left: 12px;
+    border-top: 1px solid #f1f3f5;
+    border-left: 2px solid #ced4da;
+}
+.comentario-root .comentario-ph-comment-card .comentario-ph-card-header {
+    height: 32px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    border-radius: 3px;
+}
+.comentario-root .comentario-ph-comment-card .comentario-ph-card-text {
+    height: 12px;
+    margin-bottom: 6px;
+    border-radius: 1.5px;
+}
+.comentario-root .comentario-ph-bg {
+    background-color: var(--cmntr-placeholder-bg);
+    opacity: 0.5;
+    mask-image: linear-gradient(
+        130deg,
+        var(--cmntr-placeholder-mask) 40%,
+        rgba(0, 0, 0, 0.2) 50%,
+        var(--cmntr-placeholder-mask) 60%
+    );
+    mask-size: 200% 100%;
+    animation: comentario-ph-bg 2s linear infinite;
+}
+@keyframes comentario-ph-bg {
+    to {
+        mask-position: -200% 0;
+    }
+}
+.comentario-root .comentario-spinner {
+    position: relative;
+}
+.comentario-root .comentario-spinner::after {
+    content: "";
+    background: url("data:image/svg+xml,%3Csvg width='135' height='135' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M80.651 14.018q0 12.273-2.337 23.672-2.047 11.105-4.384 23.088 10.52-5.846 20.75-11.399 10.227-5.552 22.21-9.644l1.753-.584 8.183 24.548-2.339.876q-11.689 4.384-23.38 5.846-11.689 1.169-23.964 2.045 9.646 8.184 18.12 16.073 8.476 7.6 15.783 17.828l1.461 2.045-21.335 14.906-1.168-1.754q-7.013-10.52-12.273-20.75-4.97-10.52-10.23-21.624-5.26 11.105-10.52 21.625Q52.013 111.043 45 121.564l-1.17 1.754-21.334-14.906 1.46-2.045Q31.265 96.14 39.74 88.54q8.474-7.89 18.118-16.073-12.273-.876-23.964-2.045-11.69-1.462-23.378-5.846l-2.339-.876 8.183-24.547 1.753.582q11.983 4.092 22.211 9.646 10.228 5.55 20.75 11.397-2.338-11.983-4.677-23.088-2.045-11.397-2.045-23.672V11.68h26.3z' fill='%23ec8100'/%3E%3C/svg%3E")
+        center/100% no-repeat;
+    display: inline-block;
+    position: absolute;
+    width: 1.5em;
+    height: 1.5em;
+    animation: 1s linear infinite comentario-spinner-rotate;
+}
+@keyframes comentario-spinner-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+.comentario-root .comentario-thread-toolbar {
+    display: flex;
+    align-content: center;
+    align-items: center;
+    flex-wrap: nowrap;
+    color: var(--cmntr-muted-color);
+    font-size: 12px;
+}
+.comentario-root .comentario-thread-toolbar::after {
+    display: block;
+    clear: both;
+    content: "";
+}
+.comentario-root .comentario-thread-toolbar .comentario-thread-buttons {
+    flex-grow: 0;
+    text-align: left;
+}
+.comentario-root .comentario-thread-toolbar .comentario-comment-count {
+    flex-grow: 1;
+    text-align: right;
+}
+.comentario-root .comentario-thread-toolbar .comentario-sort-buttons {
+    flex-grow: 0;
+    text-align: right;
+}
+.comentario-root .comentario-thread-toolbar .comentario-btn .comentario-icon {
+    width: 8px;
+    height: 8px;
+    transition: transform 0.2s;
+}
+.comentario-root .comentario-thread-toolbar .comentario-btn.comentario-sort-asc .comentario-icon {
+    transform: rotate(180deg);
+}
+.comentario-root .comentario-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.comentario-root .comentario-toolbar .comentario-toolbar-section {
+    display: flex;
+    align-items: center;
+}
+.comentario-root .comentario-toolbar .comentario-btn-tool {
+    --cmntr-btn-color: var(--cmntr-muted-color);
+    margin: 0;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    opacity: 0.5;
+}
+.comentario-root .comentario-toolbar .comentario-btn-tool.comentario-btn-lg {
+    width: 40px;
+    height: 40px;
+}
+.comentario-root .comentario-toolbar .comentario-btn-tool.comentario-btn-lg .comentario-icon {
+    width: 1.25em;
+    height: 1.25em;
+}
+.comentario-root .comentario-toolbar.comentario-disabled {
+    background-color: var(--cmntr-bg-shade);
+}
+.comentario-root .comentario-toolbar.comentario-disabled .comentario-btn-tool {
+    pointer-events: none;
+}
