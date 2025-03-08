@@ -434,7 +434,7 @@ window.addEventListener("locationchange", async () => {
 })
 
 // Entry Point
-document.addEventListener("readystatechange", async (event) => {
+async function init() {
 	if (document.readyState === "complete") {
 		Promise.all([restoreComments(), showServerStatus()]).catch((e) => console.error(e))
 		await checkAndInject()
@@ -442,4 +442,6 @@ document.addEventListener("readystatechange", async (event) => {
 
 		setInterval(showServerStatus, 300000)
 	}
-})
+}
+document.addEventListener("readystatechange", init)
+init()  // don't await this, it will block the extension from loading (I don't know why) [2025-03-07]
