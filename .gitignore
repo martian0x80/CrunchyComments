@@ -5,3 +5,7 @@
 
 **/node_modules
 **/.next
+
+baks/**
+scripts/bak/**
+docs/out/**

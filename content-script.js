@@ -159,32 +159,53 @@ const reattachEditorObserver = async (comentarioComments) => {
 
 const replaceTimestamps = function (mainComentarioArea) {
 	const timestampRegex = /\b(?:([0-9]+):)?([0-5]?[0-9]):([0-5][0-9])\b/g
+	const resPattern = /(\[res - [^\]]*\])/
 
 	mainComentarioArea.querySelectorAll(commentParagraphSelector).forEach((comment) => {
 		if (comment.querySelector("span.crunchy-comments-timestamp-block") !== null) {
 			return
 		}
 
-		// Replace Timestamps
-		comment.innerHTML = comment.innerHTML.replaceAll(
-			timestampRegex,
-			(match) => `<span class="crunchy-comments-timestamp-block">${match.trim()}</span>`
-		)
+		let htmlContent = comment.innerHTML
+		const resSplit = htmlContent.split(resPattern, 3)
+		
+		// If there's a [res] section
+		if (resSplit.length > 1) {
+			// Format only the content before [res]
+			const beforeRes = resSplit[0].replaceAll(
+				timestampRegex,
+				(match) => `<span class="crunchy-comments-timestamp-block">${match.trim()}</span>`
+			)
+			
+			// Keep [res] section unchanged
+			const resSection = resSplit[1]
+			
+			// Any content after [res] (if it exists)
+			const afterRes = resSplit[2] || ""
+			
+			comment.innerHTML = beforeRes + resSection + afterRes
+		} else {
+			// No [res] section found, format the entire content
+			comment.innerHTML = htmlContent.replaceAll(
+				timestampRegex,
+				(match) => `<span class="crunchy-comments-timestamp-block">${match.trim()}</span>`
+			)
+		}
 	})
 }
 
 const replaceSpoilers = function (mainComentarioArea) {
-	const spoilerRegex = /\|\|.*?\|\|/g
+	// Added 's' flag to make dot match newlines
+	const spoilerRegex = /\|\|.*?\|\|/gs
 
 	mainComentarioArea.querySelectorAll(commentParagraphSelector).forEach((comment) => {
 		if (comment.querySelector("span.crunchy-comments-spoiler-block") !== null) {
 			return
 		}
 
-		// Replace Spoilers
-		comment.innerHTML = comment.innerHTML.replaceAll(
+		comment.innerHTML = comment.innerHTML.replace(
 			spoilerRegex,
-			(match) => `<span class="crunchy-comments-spoiler-block">${match.slice(2, -2).trim()}</span>`
+				(match) => `<span class="crunchy-comments-spoiler-block">${match.slice(2, -2).trim()}</span>`
 		)
 	})
 }
@@ -379,8 +400,8 @@ const injectElements = async () => {
 		"display: flex; justify-content: center; z-index: 1; max-width: fit-content; margin: 0 auto;"
 
 	let comentarioElement = document.createElement("comentario-comments")
-	comentarioElement.setAttribute("max-level", "5")
-	comentarioElement.setAttribute("lang", "en")
+	comentarioElement.setAttribute("max-level", "10")
+	comentarioElement.setAttribute("theme", "dark")
 	// It seems "page-id" does not have any effect, so changes are moved to comentario.js
 	targetElement.insertAdjacentElement("afterend", comentarioElement)
 	targetElement.insertAdjacentElement("afterend", scrapeStatusElement)
