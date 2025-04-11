@@ -172,6 +172,31 @@ export function Home() {
 				)}
 			</div>
 
+			<motion.div
+				className="fixed top-4 left-0 right-0 z-50 px-4"
+				initial={{ opacity: 0, x: -50 }}
+				animate={{ opacity: 1, x: 0 }}
+				transition={{ duration: 0.5 }}
+			>
+				<div className="container mx-auto flex justify-between items-center">
+					<div className="flex items-center gap-2">
+						<MessageSquare className="h-8 w-8 text-orange-500" />
+						<span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-pink-500">
+							Crunchy Comments
+						</span>
+					</div>
+					<div className="flex items-center gap-4">
+						<Link href="/privacy" className="text-sm text-gray-400 hover:text-white transition-colors">
+							Privacy Policy
+						</Link>
+						<span className="text-gray-600">•</span>
+						<Link href="/terms" className="text-sm text-gray-400 hover:text-white transition-colors">
+							Terms of Service
+						</Link>
+					</div>
+				</div>
+			</motion.div>
+
 			<div ref={scrollRef} className="relative">
 				<section className="min-h-screen flex items-center justify-center py-20">
 					<div className="container mx-auto px-4">
@@ -407,21 +432,8 @@ export function Home() {
 				<div className="mb-10">
 					<ComentarioComments />
 				</div>
-			</div>
 
-			<motion.div
-				className="fixed top-4 left-4 z-50"
-				initial={{ opacity: 0, x: -50 }}
-				animate={{ opacity: 1, x: 0 }}
-				transition={{ duration: 0.5 }}
-			>
-				<div className="flex items-center gap-2">
-					<MessageSquare className="h-8 w-8 text-orange-500" />
-					<span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-orange-500 to-pink-500">
-						Crunchy Comments
-					</span>
-				</div>
-			</motion.div>
+			</div>
 
 			<FloatingDockB />
 
