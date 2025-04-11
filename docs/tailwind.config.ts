@@ -55,9 +55,32 @@ const config: Config = {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
-  		}
+  		},
+      typography: {
+        DEFAULT: {
+          css: {
+            color: 'white',
+            h1: { color: 'white' },
+            h2: { color: 'white' },
+            h3: { color: 'white' },
+            h4: { color: 'white' },
+            p: { color: 'white' },
+            li: { color: 'white' },
+            strong: { color: 'white' },
+            a: { 
+              color: 'hsl(var(--primary))',
+              '&:hover': {
+                color: 'hsl(var(--primary-foreground))',
+              },
+            },
+          },
+        },
+      },
   	}
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require('@tailwindcss/typography'),
+  ],
 };
 export default config;

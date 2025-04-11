@@ -229,11 +229,6 @@ function replaceTimestampsFunction(event) {
 		})
 	}
 
-	const cssElement = document.getElementsByClassName("css-9pa8cd")[1]
-	if (cssElement && cssElement.click) {
-		cssElement.click()
-	}
-
 	const videoIframe = document.querySelector("iframe.video-player")
 	if (videoIframe && videoIframe.contentWindow) {
 		videoIframe.contentWindow.postMessage(
