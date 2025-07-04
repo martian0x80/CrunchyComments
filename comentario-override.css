@@ -1944,3 +1944,12 @@ comentario-comments[theme="dark"] {
 .comentario-root .comentario-toolbar.comentario-disabled .comentario-btn-tool {
     pointer-events: none;
 }
+
+.comentario-root ul {
+    padding: revert;
+    margin: revert;
+}
+
+.comentario-root li {
+    list-style-type: revert;
+}
