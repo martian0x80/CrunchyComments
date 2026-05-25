@@ -88,6 +88,14 @@ const commentParagraphSelector = ".comentario-card .comentario-card-body > p, .c
 
 // Inject features into a comment editor
 function onEditorOpen(comentarioEditor) {
+	// Prevent crunchyroll from intercepting the key-event to allow the textArea to handle it
+	const textArea = comentarioEditor.querySelector("textarea")
+	textArea.addEventListener("keydown", (e) => {
+		if (e.target === textArea) {
+			e.stopImmediatePropagation()
+		}
+	}, true)
+
 	// Add Spoiler Button
 	const spoilerButton = document.createElement("button")
 	spoilerButton.classList.add("comentario-btn", "comentario-btn-tool")
