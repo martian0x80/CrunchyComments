@@ -1,5 +1,6 @@
 function gotoTimestamp(sec) {
-  document.getElementById("player0").currentTime = sec;
+  const video = document.querySelector("video") || document.getElementById("player0");
+  if (video) video.currentTime = sec;
 }
 
 window.onload = () => {

@@ -228,13 +228,21 @@ function replaceTimestampsFunction(event) {
 
 	seconds = (hours * 60 + minutes) * 60 + seconds
 
-	const el = document.querySelector("iframe.video-player") || document.getElementById("player0") || {}
+	const video = document.querySelector("video")
+	const el = video || document.querySelector("iframe.video-player") || document.getElementById("player0") || {}
 	if (el.scrollIntoView) {
 		el.scrollIntoView({
 			behavior: "smooth",
 			block: "end",
 			inline: "nearest",
 		})
+	}
+
+	// Bitmovin renders its media element directly on the Crunchyroll watch page.
+	// Keep the iframe message below for the legacy player.
+	if (video) {
+		video.currentTime = Number.isFinite(video.duration) ? Math.min(seconds, video.duration) : seconds
+		return
 	}
 
 	const videoIframe = document.querySelector("iframe.video-player")

@@ -9,3 +9,10 @@
 baks/**
 scripts/bak/**
 docs/out/**
+
+docker-test
+
+production-v3.18.0
+
+*.zip
+
