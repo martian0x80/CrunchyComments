@@ -9,9 +9,6 @@
 </a>
 <br/><br/>
 
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V711OXB9)
-<br/>
-
 [![UV4C4ybeBTsZt43U4xis](https://github.com/user-attachments/assets/6a6c5caa-f384-4201-bc2e-023bfd7687c4)](https://chromewebstore.google.com/detail/crunchy-comments/feapmagcaclnifojeninfmpdedbiafdd?authuser=0&hl=en)
 [![get-the-addon-178x60px dad84b42](https://github.com/user-attachments/assets/fe67e707-37c3-40d4-b04d-0526018930f6)](https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/)
 <br/>
@@ -29,7 +26,7 @@
 [![GitHub watchers](https://img.shields.io/github/watchers/martian0x80/CrunchyComments)](https://github.com/martian0x80/CrunchyComments/watchers)
 
 <p align="center">
-  Bring back the comment section to Crunchyroll with Crunchyroll Comments, an open-source, and privacy-focused browser extension for Chrome, Firefox, and Edge.
+  Bring back the comment section to Crunchyroll with Crunchyroll Comments, an open-source, and privacy-focused browser extension for Chrome, Firefox, and Edge. We restored over 250k+ comments from crunchyroll before the doom's day, totaling to around 300k comments including new so far.
 </p>
 <a href="images/ss.png">
     <img alt="Crunchyroll Comments screenshot" src="images/ss.png" style="width: 100%; height: auto; max-width: 1000px; max-height: 1000px">
@@ -40,7 +37,7 @@
 
 <div align="center">
     <a href="https://discord.gg/MW3rgwTcF9">Discord</a> |
-    <a href="mailto:nevergonnaletyoudown@proxiedmail.com">Mail</a>
+    <a href="mailto:uwu@crunchycomments.com">Mail</a>
 </div>
 <br/>
 
