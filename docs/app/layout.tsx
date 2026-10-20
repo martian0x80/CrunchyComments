@@ -1,61 +1,71 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import "./globals.css";
+import type { Metadata } from "next"
+import localFont from "next/font/local"
+import "./globals.css"
 
 const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+	src: "./fonts/GeistVF.woff",
+	variable: "--font-geist-sans",
+	weight: "100 900",
+})
+
+const description = "A browser extension that restores comments on Crunchyroll."
 
 export const metadata: Metadata = {
-  title: "CrunchyComments",
-  description: "Bring back the comment section to Crunchyroll.",
-};
+	metadataBase: new URL("https://www.crunchycomments.com"),
+	title: { default: "CrunchyComments", template: "%s | CrunchyComments" },
+	description,
+	icons: {
+		icon: [
+			{ url: "/favicon.ico", sizes: "48x48 32x32 16x16" },
+			{ url: "/favicon.svg", type: "image/svg+xml" },
+		],
+		apple: "/apple-touch-icon.png",
+	},
+	manifest: "/site.webmanifest",
+	twitter: {
+		card: "summary_large_image",
+		site: "@crunchycomments",
+		creator: "@crunchycomments",
+		title: "CrunchyComments",
+		description,
+		images: ["/hime.png"],
+	},
+	openGraph: {
+		type: "website",
+		siteName: "CrunchyComments",
+		locale: "en_US",
+		title: "CrunchyComments",
+		description,
+		images: [{ url: "/hime.png", alt: "Hime" }],
+	},
+}
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-    <head>
-      <link rel="icon" href="/favicon.ico" sizes="48x48 32x32 16x16" />
-      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-      <link rel="manifest" href="/site.webmanifest" />
-      <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:site" content="@crunchycomments" />
-      <meta name="twitter:creator" content="@crunchycomments" />
-      <meta
-      name="twitter:title"
-      content="CrunchyComments: Are you missing the comment section on Crunchyroll?"
-      />
-      <meta
-      name="twitter:description"
-      content="Bring Back the comment section to Crunchyroll with CrunchyComments."
-      />
-      <meta name="twitter:image" content="/logo.png" />
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+	return (
+		<html lang="en">
+			<body className={geistSans.variable}>
+				<a className="skip-link" href="#main">Skip to content</a>
+				<div className="site-shell">
+					<header className="site-header">
+						<a className="wordmark" href="/">
+							<span className="wordmark-cue" aria-hidden="true" />
+							CrunchyComments
+						</a>
+					</header>
 
-      <meta name="og:image" content="https://www.crunchycomments.com/hime.png" />
-      <meta name="og:type" content="website" />
-      <meta name="og:site_name" content="Crunchy Comments" />
-      <meta name="og:locale" content="en_US" />
-      <meta name="og:image:type" content="image/png" />
-      <meta name="og:image:alt" content="Hime" />
-      <meta name="HandheldFriendly" content="True" />
-      <meta name="og:image" content="https://www.crunchycomments.com/hime.png" />
-    </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-  );
+					<main id="main" tabIndex={-1}>{children}</main>
+
+					<footer className="site-footer">
+						<a className="footer-name" href="/">CrunchyComments</a>
+						<nav className="footer-nav" aria-label="Footer navigation">
+							<a href="https://github.com/martian0x80/CrunchyComments">GitHub</a>
+							<a href="https://discord.gg/MW3rgwTcF9">Discord</a>
+							<a href="/privacy">Privacy</a>
+							<a href="/terms">Terms</a>
+						</nav>
+					</footer>
+				</div>
+			</body>
+		</html>
+	)
 }
