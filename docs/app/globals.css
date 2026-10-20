@@ -235,6 +235,22 @@ a:focus-visible {
 	font-size: 0.8rem;
 }
 
+.comments-section {
+	padding-block: clamp(2.5rem, 6vh, 4rem);
+	border-top: 1px solid var(--line);
+}
+
+.comments-section h2 {
+	margin: 0 0 1rem;
+	font-size: 1.5rem;
+	font-weight: 620;
+	letter-spacing: -0.02em;
+}
+
+comentario-comments {
+	display: block;
+}
+
 .legal-content {
 	width: min(100%, 68ch);
 	margin-inline: auto;

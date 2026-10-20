@@ -1,3 +1,6 @@
+import Script from "next/script"
+import { ComentarioComments } from "@/components/comentario"
+
 const chromeStore =
 	"https://chromewebstore.google.com/detail/crunchyroll-comments/feapmagcaclnifojeninfmpdedbiafdd?authuser=0&hl=en"
 const firefoxAddons = "https://addons.mozilla.org/en-US/firefox/addon/crunchy-comments-uwu/"
@@ -53,6 +56,12 @@ export function Home() {
 					</div>
 					<figcaption>Comment section shown with CrunchyComments.</figcaption>
 				</figure>
+			</section>
+
+			<section className="comments-section" aria-labelledby="comments-title">
+				<h2 id="comments-title">Comments</h2>
+				<Script src="https://chat.crunchycomments.com/comentario.js" strategy="lazyOnload" />
+				<ComentarioComments />
 			</section>
 		</div>
 	)
