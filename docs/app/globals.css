@@ -236,8 +236,31 @@ a:focus-visible {
 }
 
 .comments-section {
+	position: relative;
+	isolation: isolate;
 	padding-block: clamp(2.5rem, 6vh, 4rem);
 	border-top: 1px solid var(--line);
+	color: var(--ink);
+	transition: color 250ms ease, border-color 250ms ease;
+}
+
+.comments-section::before {
+	position: absolute;
+	z-index: -1;
+	inset-block: 0;
+	inset-inline: calc((100% - 100vw) / 2);
+	background: var(--paper);
+	transition: background-color 250ms ease;
+	content: "";
+}
+
+.comments-section.is-visible {
+	border-color: #323232;
+	color: var(--paper);
+}
+
+.comments-section.is-visible::before {
+	background: #090909;
 }
 
 .comments-section h2 {
@@ -249,6 +272,13 @@ a:focus-visible {
 
 comentario-comments {
 	display: block;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.comments-section,
+	.comments-section::before {
+		transition-duration: 0s;
+	}
 }
 
 .legal-content {
