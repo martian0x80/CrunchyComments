@@ -8,11 +8,6 @@ const script = document.createElement("script")
 script.src = chrome.runtime.getURL("comentario.js")
 script.defer = true
 
-// Inject comentario-override.css
-const link = document.createElement("link")
-link.rel = "stylesheet"
-link.type = "text/css"
-link.href = chrome.runtime.getURL("comentario-override.css")
 
 // Inject patch.js
 const patchScript = document.createElement("script")
@@ -23,7 +18,6 @@ document.documentElement.appendChild(patchScript)
 const appendScript = () => {
 	if (document.head) {
 		document.head.appendChild(script)
-		document.head.appendChild(link)
 	} else {
 		requestAnimationFrame(appendScript)
 	}
